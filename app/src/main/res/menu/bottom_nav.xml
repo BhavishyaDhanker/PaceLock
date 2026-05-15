@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <item
+        android:title="HOME"
+        android:id="@+id/home"
+        android:icon="@drawable/ic_home"/>
+
+    <item
+        android:title="RUNS"
+        android:id="@+id/runs"
+        android:icon="@drawable/ic_runs"/>
+
+    <item
+        android:title="STATS"
+        android:id="@+id/stats"
+        android:icon="@drawable/ic_stats"/>
+
+    <item
+        android:title="CONFIG"
+        android:id="@+id/config"
+        android:icon="@drawable/ic_gear"/>
+</menu>

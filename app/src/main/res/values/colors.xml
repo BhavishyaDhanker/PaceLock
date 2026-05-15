@@ -5,4 +5,5 @@
     <color name="secondary">#00F0FF</color>
     <color name="tertiary">#FFFFFF</color>
     <color name="neutral">#0A0A0A</color>
+    <color name="faded_primary">#A3A68F</color>
 </resources>
