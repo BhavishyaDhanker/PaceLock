@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".HomeFragment">
+    tools:context=".Home.HomeFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -76,6 +76,7 @@
                     android:layout_height="160dp"
                     android:layout_gravity="center"
                     android:layout_marginTop="50dp"
+                    android:id="@+id/startRun"
                     app:cardCornerRadius="16dp"
                     android:backgroundTint="@color/primary">
 

@@ -1,19 +1,21 @@
-package com.example.pacelock
+package com.example.pacelock.Stats
 
-import androidx.fragment.app.viewModels
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import com.example.pacelock.R
+import com.example.pacelock.Stats.StatsViewModel
 
-class RunFragment : Fragment() {
+class StatsFragment : Fragment() {
 
     companion object {
-        fun newInstance() = RunFragment()
+        fun newInstance() = StatsFragment()
     }
 
-    private val viewModel: RunViewModel by viewModels()
+    private val viewModel: StatsViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,6 +27,6 @@ class RunFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        return inflater.inflate(R.layout.fragment_run, container, false)
+        return inflater.inflate(R.layout.fragment_stats, container, false)
     }
 }

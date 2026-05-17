@@ -6,4 +6,5 @@
     <color name="tertiary">#FFFFFF</color>
     <color name="neutral">#0A0A0A</color>
     <color name="faded_primary">#A3A68F</color>
+    <color name="card_bg">#1C1B1B</color>
 </resources>

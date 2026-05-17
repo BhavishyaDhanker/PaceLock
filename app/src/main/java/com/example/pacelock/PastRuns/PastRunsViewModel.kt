@@ -1,4 +1,4 @@
-package com.example.pacelock
+package com.example.pacelock.PastRuns
 
 import androidx.lifecycle.ViewModel
 

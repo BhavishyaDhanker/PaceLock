@@ -1,7 +1,7 @@
-package com.example.pacelock
+package com.example.pacelock.Stats
 
 import androidx.lifecycle.ViewModel
 
-class RunViewModel : ViewModel() {
+class StatsViewModel : ViewModel() {
     // TODO: Implement the ViewModel
 }

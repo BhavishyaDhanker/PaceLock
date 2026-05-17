@@ -11,6 +11,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.PaceLock">
         <activity
+            android:name=".Run.RunActivity"
+            android:exported="false" />
+        <activity
             android:name=".HomeActivity"
             android:exported="true">
             <intent-filter>

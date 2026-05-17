@@ -9,7 +9,7 @@
 
     <item
         android:title="RUNS"
-        android:id="@+id/runs"
+        android:id="@+id/pastRuns"
         android:icon="@drawable/ic_runs"/>
 
     <item
