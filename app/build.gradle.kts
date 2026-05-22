@@ -1,17 +1,16 @@
 plugins {
-    alias(libs.plugins.android.application)
+    id("com.android.application")
+    kotlin("android")
+    kotlin("kapt")
 }
 
 android {
     namespace = "com.example.pacelock"
-    compileSdk {
-        version = release(36) {
-            minorApiLevel = 1
-        }
 
-        buildFeatures {
-            viewBinding = true
-        }
+    compileSdk = 36
+
+    buildFeatures {
+        viewBinding = true
     }
 
     defaultConfig {
@@ -27,15 +26,25 @@ android {
     buildTypes {
         release {
             isMinifyEnabled = false
+
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
         }
     }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+
+        compileOptions {
+            sourceCompatibility = JavaVersion.VERSION_17
+            targetCompatibility = JavaVersion.VERSION_17
+        }
+    }
+
+kotlin {
+    compilerOptions {
+        jvmTarget.set(
+            org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17
+        )
     }
 }
 
@@ -52,4 +61,17 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.junit)
+
+
+    // OSMDroid - Map
+    implementation("org.osmdroid:osmdroid-android:6.1.18")
+
+    // Google Play Services - Fused Location
+    implementation("com.google.android.gms:play-services-location:21.3.0")
+
+    // Room (for saving runs later - Phase 9)
+    implementation("androidx.room:room-runtime:2.6.1")
+    implementation("androidx.room:room-ktx:2.6.1")
+    kapt("androidx.room:room-compiler:2.6.1")
 }
+
