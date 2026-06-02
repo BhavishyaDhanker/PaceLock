@@ -208,6 +208,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:text="FINISH"
+                                android:id="@+id/finishRun"
                                 android:textSize="23dp"
                                 android:fontFamily="@font/space"
                                 android:textColor="@color/tertiary"/>
@@ -235,6 +236,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:text="PAUSE RUN"
+                                android:id="@+id/pauseRun"
                                 android:textSize="23dp"
                                 android:fontFamily="@font/space"
                                 android:textColor="@color/neutral"/>
