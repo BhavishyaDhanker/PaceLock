@@ -35,7 +35,7 @@ object RunStatsCalculator {
         }
     }
 
-    fun calculatePace( distanceMeters: Float, secondsElapsed: Float) : String{
+    fun calculatePace( distanceMeters: Float, secondsElapsed: Long) : String{
         if(distanceMeters < 10f){
             return "--:-- min/km"
         }
@@ -55,10 +55,10 @@ object RunStatsCalculator {
         )
     }
 
-    fun elapsedTime( secondsElapsed: Float): String{
-        val hrsElapsed = secondsElapsed/3600f.toInt()
-        val minElapsed = (secondsElapsed - hrsElapsed*3600f)/60f.toInt()
-        val secElapsed = (secondsElapsed - minElapsed*60f - hrsElapsed*3600f).toInt()
+    fun elapsedTime( secondsElapsed: Long): String{
+        val hrsElapsed = secondsElapsed/3600L.toInt()
+        val minElapsed = (secondsElapsed - hrsElapsed*3600L)/60L.toInt()
+        val secElapsed = (secondsElapsed - minElapsed*60L - hrsElapsed*3600L).toInt()
 
         return String.format(
             Locale.getDefault(),
