@@ -1,6 +1,7 @@
 package com.example.pacelock.Run
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.pacelock.RunStatsCalculator
@@ -13,10 +14,12 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.time.delay
 import org.osmdroid.util.GeoPoint
 import kotlin.collections.mutableListOf
+import kotlin.concurrent.timer
 
 class RunViewModel(application : Application) : AndroidViewModel(application) {
 
@@ -104,7 +107,7 @@ class RunViewModel(application : Application) : AndroidViewModel(application) {
         timerJob?.cancel()
 
         timerJob = viewModelScope.launch {
-            while (_isTracking.value) {
+            while (isActive && _isTracking.value) {
 
                 delay(1000L)
 
@@ -115,23 +118,66 @@ class RunViewModel(application : Application) : AndroidViewModel(application) {
         }
     }
 
+    /*
+    Job is like a pointer to the coroutine (viewModelScope) example here
+    the timerJob is the pointer to that particular coroutine.
+    isActive checks if the coroutine is active or not (if Job.cancel() have been
+    called or not)
+     */
 
+    fun startLocationUpdates(){
+        repo.startTracking { point ->
 
-    fun onPauseBtnClicked() {
+            _currentLocation.value = point
 
-        if(!_isPaused.value){
-            _isPaused.value = true
-        }else{
-            _isPaused.value = false
+            if (_isTracking.value && !_isPaused.value){
+
+                val updatedList = _pathPoints.value.apply {
+                    add(point)
+                }
+
+                _pathPoints.value = updatedList
+
+                val segmentedDistance = calculator.calculateLastSegmentDistance(updatedList)
+
+                _totalDistanceMeters.value += segmentedDistance
+            }
         }
     }
 
-    fun onFinishBtnClicked() {
+
+    fun startRun(){
+        _isTracking.value = true
+        _isPaused.value = false
+        startTimer()
+    }
+
+    fun pauseRun(){
+        _isPaused.value = true
+    }
+
+    fun resumeRun(){
+        _isPaused.value = false
+    }
+
+    fun finishRun(){
         _isTracking.value = false
+
+        timerJob?.cancel()
+
+        repo.stopTracking()
+
+        Log.d("Finish Run", "Finish run clicked ")
     }
 
 
+    override fun onCleared() {
+        super.onCleared()
 
+        repo.stopTracking()
+
+        timerJob?.cancel()
+    }
 
 
 }

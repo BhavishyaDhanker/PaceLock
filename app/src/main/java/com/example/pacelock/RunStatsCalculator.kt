@@ -45,7 +45,7 @@ object RunStatsCalculator {
         val paceMinPerKm = minutesElapsed/distanceKm
 
         val paceMinutes = paceMinPerKm.toInt()
-        val paceSeconds = (paceMinPerKm - paceMinutes)*60f.toInt()
+        val paceSeconds = ((paceMinPerKm - paceMinutes)*60).toInt()
 
         return String.format(
             Locale.getDefault(),
@@ -62,7 +62,7 @@ object RunStatsCalculator {
 
         return String.format(
             Locale.getDefault(),
-            "%02d:%02d:02d",
+            "%02d:%02d:%02d",
             hrsElapsed,
             minElapsed,
             secElapsed
