@@ -1,10 +1,13 @@
 package com.example.pacelock.Run
 
 import android.app.Application
+import android.content.Context
+import android.content.Intent
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.pacelock.RunStatsCalculator
+import com.example.pacelock.service.RunTrackingService
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -49,7 +52,7 @@ class RunViewModel(application : Application) : AndroidViewModel(application) {
     )
 
     val formattedTime = _elapsedSeconds.map{
-        calculator.elapsedTime(it)
+        calculator.formatTime(it)
     }.stateIn(
         viewModelScope,
         SharingStarted.WhileSubscribed(5000),
@@ -74,6 +77,20 @@ class RunViewModel(application : Application) : AndroidViewModel(application) {
         Initial Value = initial value of the state flow
 
      */
+
+    fun updateElapsedSeconds(seconds: Long) {
+        _elapsedSeconds.value = seconds
+    }
+
+    fun addLocation(point: GeoPoint, segmentDistance: Float) {
+        val currentPoints = _pathPoints.value ?: mutableListOf()
+        currentPoints.add(point)
+        _pathPoints.value = currentPoints
+        _currentLocation.value = (point)
+        _totalDistanceMeters.value = (
+            (_totalDistanceMeters.value ?: 0f) + segmentDistance
+        )
+    }
 
 
 
@@ -142,6 +159,39 @@ class RunViewModel(application : Application) : AndroidViewModel(application) {
 
                 _totalDistanceMeters.value += segmentedDistance
             }
+        }
+    }
+
+    fun startService(context: Context) {
+
+        val intent = Intent(
+            context,
+            RunTrackingService::class.java
+        )
+
+        intent.action = RunTrackingService.ACTION_START
+
+        context.startService(intent)
+    }
+
+    fun pauseService(context: Context){
+        Intent(context, RunTrackingService::class.java).apply{
+            action = RunTrackingService.ACTION_PAUSE
+            context.startService(this)
+        }
+    }
+
+    fun resumeService(context: Context){
+        Intent(context, RunTrackingService::class.java).apply{
+            action = RunTrackingService.ACTION_RESUME
+            context.startService(this)
+        }
+    }
+
+    fun finishService(context: Context){
+        Intent(context, RunTrackingService::class.java).apply{
+            action = RunTrackingService.ACTION_FINISH
+            context.startService(this)
         }
     }
 

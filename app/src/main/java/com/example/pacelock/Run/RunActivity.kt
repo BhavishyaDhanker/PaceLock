@@ -1,30 +1,23 @@
 package com.example.pacelock.Run
 
-import android.annotation.SuppressLint
+import android.content.ComponentName
+import android.content.Context
 import android.content.Intent
+import android.content.ServiceConnection
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.Paint
 import android.os.Bundle
-import android.os.CountDownTimer
-import android.util.Log
-import android.view.LayoutInflater
+import android.os.IBinder
 import android.widget.Toast
-import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
-import com.example.pacelock.HomeActivity
-import com.example.pacelock.LocationPermissionHelper
-import com.example.pacelock.LocationTracker
-import com.example.pacelock.R
+import com.example.pacelock.PermissionHelper
 import com.example.pacelock.databinding.ActivityRunBinding
+import com.example.pacelock.service.RunTrackingService
 import kotlinx.coroutines.launch
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
-import org.osmdroid.util.GeoPoint
-import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Polyline
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay
@@ -33,7 +26,9 @@ class RunActivity : AppCompatActivity() {
 
     lateinit var binding : ActivityRunBinding
     val viewModel : RunViewModel by viewModels()
-    val helper = LocationPermissionHelper
+    val helper = PermissionHelper
+    private var trackingService: RunTrackingService? = null
+    private var isBound = false
 
 
     private lateinit var runPolyline: Polyline
@@ -56,6 +51,41 @@ class RunActivity : AppCompatActivity() {
         checkPermissionThenStart()
 
     }
+
+
+    private val serviceConnection = object : ServiceConnection{
+        override fun onServiceConnected(name: ComponentName?, binder: IBinder?) {
+            val runBinder = binder as RunTrackingService.RunServiceBinder
+            trackingService = runBinder.getService()
+            isBound = true
+
+
+            trackingService?.onLocationUpdate = {point , segDist ->
+                viewModel.addLocation(point, segDist)
+
+                binding.mapView.controller.animateTo(point)
+
+            }
+
+            trackingService?.onTimerTick = { seconds ->
+                viewModel.updateElapsedSeconds(seconds)
+
+            }
+
+        }
+
+        override fun onServiceDisconnected(name: ComponentName?) {
+            isBound = false
+        }
+    }
+
+
+    private fun bindTrackingService() {
+        Intent(this, RunTrackingService::class.java).also { intent ->
+            bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)
+        }
+    }
+
 
     private fun observeStates() {
         lifecycleScope.launch {
@@ -142,24 +172,29 @@ class RunActivity : AppCompatActivity() {
         binding.pauseRun.setOnClickListener {
             if(viewModel.isPause.value){
                 viewModel.resumeRun()
+                viewModel.resumeService(this)
             }else{
                 viewModel.pauseRun()
+                viewModel.pauseService(this)
             }
         }
-
         binding.finishRun.setOnClickListener {
             viewModel.finishRun()
-
+            viewModel.finishService(this)
         }
     }
 
     private fun checkPermissionThenStart() {
+        when{
 
-        if(helper.hasPermissionGranted(this)){
-            onPermissionGranted()
-        }else{
-            helper.requestPermission(this)
+            !helper.hasLocationPermissionGranted(this) -> helper.requestLocationPermission(this)
+
+            !helper.hasNotificationPermission(this) -> helper.requestNotificationPermission(this)
+
+            else -> startServiceAndCountdown()
         }
+
+
     }
 
     override fun onRequestPermissionsResult(
@@ -169,21 +204,41 @@ class RunActivity : AppCompatActivity() {
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
-        if(requestCode == helper.REQUEST_CODE){
-            val granted = grantResults.isNotEmpty() && grantResults.all {
-                it == PackageManager.PERMISSION_GRANTED
+        when (requestCode) {
+
+            helper.REQUEST_LOCATION_CODE -> {
+                if(grantResults.isNotEmpty() && grantResults.all {
+                    it == PackageManager.PERMISSION_GRANTED
+                    }){
+                    checkPermissionThenStart()
+                }else{
+                    Toast.makeText(
+                        this@RunActivity,
+                        "Location Permission is required to track Run",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
             }
 
-            if(granted){
-                onPermissionGranted()
-            }else{
-                onPermissionDenied()
+            helper.REQUEST_NOTIFICATION_CODE -> {
+                if(grantResults.firstOrNull() != PackageManager.PERMISSION_GRANTED) {
+                    Toast.makeText(
+                        this@RunActivity,
+                        "This permission helps to track run in background",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+                startServiceAndCountdown()
             }
+
         }
     }
 
-    fun onPermissionGranted(){
+
+
+    fun startServiceAndCountdown(){
         viewModel.startLocationUpdates()
+
         startCountdown()
     }
 
@@ -201,6 +256,17 @@ class RunActivity : AppCompatActivity() {
         ).show()
 
         finish()
+    }
+
+    override fun onDestroy(){
+        super.onDestroy()
+
+        if(isBound){
+            unbindService(serviceConnection)
+            isBound = false
+        }
+
+        binding.mapView.onDetach()
     }
 
     

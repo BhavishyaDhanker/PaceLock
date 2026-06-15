@@ -55,7 +55,7 @@ object RunStatsCalculator {
         )
     }
 
-    fun elapsedTime( secondsElapsed: Long): String{
+    fun formatTime( secondsElapsed: Long): String{
         val hrsElapsed = secondsElapsed/3600L.toInt()
         val minElapsed = (secondsElapsed - hrsElapsed*3600L)/60L.toInt()
         val secElapsed = (secondsElapsed - minElapsed*60L - hrsElapsed*3600L).toInt()
