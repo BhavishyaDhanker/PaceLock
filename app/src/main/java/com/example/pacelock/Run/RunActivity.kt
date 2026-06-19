@@ -13,6 +13,8 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import com.example.pacelock.HomeActivity
+import kotlin.let
 import com.example.pacelock.PermissionHelper
 import com.example.pacelock.databinding.ActivityRunBinding
 import com.example.pacelock.service.RunTrackingService
@@ -58,6 +60,16 @@ class RunActivity : AppCompatActivity() {
             val runBinder = binder as RunTrackingService.RunServiceBinder
             trackingService = runBinder.getService()
             isBound = true
+            viewModel.startService(this@RunActivity)
+
+            trackingService?.let { service->
+                viewModel.restoreRunStats(
+                    service.totalDistanceMeters,
+                    service.elapsedSeconds,
+                    service.pathPoints,                              // This is just a V1 solution later on we
+                    service.splits                                          // can completely shift to service tracking
+                )                                                           // by removing the viewModel updates entirely
+            }
 
 
             trackingService?.onLocationUpdate = {point , segDist ->
@@ -69,6 +81,11 @@ class RunActivity : AppCompatActivity() {
 
             trackingService?.onTimerTick = { seconds ->
                 viewModel.updateElapsedSeconds(seconds)
+
+            }
+
+            trackingService?.onSplitTrack = {splits ->
+                viewModel.updateSplits(splits)
 
             }
 
@@ -138,6 +155,21 @@ class RunActivity : AppCompatActivity() {
                 binding.tvDistance.text = it
             }
         }
+
+        lifecycleScope.launch {
+            viewModel.navigateToStats.collect { result->
+                result?.let {
+                    Intent(this@RunActivity, HomeActivity::class.java).apply {
+                        putExtra("run_result" , it)
+                        putExtra("open_fragment", "stats")
+                        startActivity(this)
+                    }
+                    viewModel.navigatedToStats()
+                    finish()
+                }
+
+            }
+        }
     }
 
     private fun setupMap() {
@@ -187,7 +219,7 @@ class RunActivity : AppCompatActivity() {
     private fun checkPermissionThenStart() {
         when{
 
-            !helper.hasLocationPermissionGranted(this) -> helper.requestLocationPermission(this)
+            !helper.hasLocationPermission(this) -> helper.requestLocationPermission(this)
 
             !helper.hasNotificationPermission(this) -> helper.requestNotificationPermission(this)
 
@@ -237,8 +269,8 @@ class RunActivity : AppCompatActivity() {
 
 
     fun startServiceAndCountdown(){
+        bindTrackingService()
         viewModel.startLocationUpdates()
-
         startCountdown()
     }
 

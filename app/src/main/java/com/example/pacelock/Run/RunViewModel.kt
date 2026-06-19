@@ -4,8 +4,11 @@ import android.app.Application
 import android.content.Context
 import android.content.Intent
 import android.util.Log
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.pacelock.Data.RunResult
+import com.example.pacelock.Data.Split
 import com.example.pacelock.RunStatsCalculator
 import com.example.pacelock.service.RunTrackingService
 import kotlinx.coroutines.Job
@@ -34,6 +37,8 @@ class RunViewModel(application : Application) : AndroidViewModel(application) {
     private val _pathPoints = MutableStateFlow<MutableList<GeoPoint>>(mutableListOf())
     private val _totalDistanceMeters = MutableStateFlow<Float>(0f)
     private val _elapsedSeconds = MutableStateFlow<Long>(0L)
+    private val _navigateToStats = MutableStateFlow<RunResult?>(null)
+    private val _splits = MutableStateFlow<List<Split>>(emptyList())
 
 
 
@@ -42,6 +47,8 @@ class RunViewModel(application : Application) : AndroidViewModel(application) {
     val pathPoints = _pathPoints.asStateFlow()
     val totalDistanceMeters = _totalDistanceMeters.asStateFlow()
     val elapsedSeconds = _elapsedSeconds.asStateFlow()
+    val navigateToStats = _navigateToStats.asStateFlow()
+    val splits = _splits.asStateFlow()
 
     val formattedDistance = _totalDistanceMeters.map{
         calculator.formatDistance(it)
@@ -162,7 +169,20 @@ class RunViewModel(application : Application) : AndroidViewModel(application) {
         }
     }
 
+    fun restoreRunStats(
+        distance: Float,
+        elapsed: Long,
+        path: List<GeoPoint>,
+        splits: List<Split>
+    ){
+        _totalDistanceMeters.value = distance
+        _elapsedSeconds.value = elapsed
+        _pathPoints.value = path as MutableList<GeoPoint>
+        _splits.value = splits
+    }
+
     fun startService(context: Context) {
+        Log.d("PACETEST", "ViewModel startService called")
 
         val intent = Intent(
             context,
@@ -171,7 +191,10 @@ class RunViewModel(application : Application) : AndroidViewModel(application) {
 
         intent.action = RunTrackingService.ACTION_START
 
-        context.startService(intent)
+        ContextCompat.startForegroundService(
+            context,
+            intent
+        )
     }
 
     fun pauseService(context: Context){
@@ -217,9 +240,24 @@ class RunViewModel(application : Application) : AndroidViewModel(application) {
 
         repo.stopTracking()
 
+
+        val result = RunResult(
+            _totalDistanceMeters.value,
+            _elapsedSeconds.value,
+            _pathPoints.value,
+            _splits.value
+        )
+
+        _navigateToStats.value = result
+
+
         Log.d("Finish Run", "Finish run clicked ")
     }
 
+
+    fun navigatedToStats(){
+        _navigateToStats.value = null // cleanup after going to that activity
+    }
 
     override fun onCleared() {
         super.onCleared()
@@ -229,5 +267,7 @@ class RunViewModel(application : Application) : AndroidViewModel(application) {
         timerJob?.cancel()
     }
 
-
+    fun updateSplits(splits: List<Split>) {
+        _splits.value = splits
+    }
 }

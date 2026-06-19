@@ -17,7 +17,7 @@ object PermissionHelper {
     const val REQUEST_LOCATION_CODE = 1001
     const val REQUEST_NOTIFICATION_CODE = 1002
 
-    fun hasLocationPermissionGranted(context : Context): Boolean {
+    fun hasLocationPermission(context : Context): Boolean {
         return REQUIRED_LOCATION_PERMISSIONS.all{ permission ->  // all to iterate on both permissions if we had more
             // particular permissions like camera and location then we
             // would have checked them separately

@@ -1,14 +1,13 @@
 package com.example.pacelock
 
+import android.content.Intent
 import android.os.Bundle
-import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.example.pacelock.Configration.ConfigurationFragment
+import com.example.pacelock.Data.RunResult
 import com.example.pacelock.Home.HomeFragment
 import com.example.pacelock.PastRuns.PastRunsFragment
 import com.example.pacelock.Stats.StatsFragment
@@ -27,11 +26,35 @@ class HomeActivity : AppCompatActivity() {
         binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        replaceFrag(HomeFragment())
+
+
+        handleIncomingIntent()
 
         setupListeners()
         observeStates()
         }
+
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+
+        handleIncomingIntent()
+    }
+
+    private fun handleIncomingIntent() {
+        val open_frag = intent.getStringExtra("open_fragment")
+        val runResult = intent.getParcelableExtra<RunResult>("run_result")
+
+        if(open_frag == "stats" && runResult != null){
+
+            binding.bottomNav.selectedItemId = R.id.stats
+
+            val statsFragment = StatsFragment.newInstance(runResult)
+            replaceFrag(statsFragment)
+        }else{
+            replaceFrag(HomeFragment())
+        }
+    }
 
     private fun observeStates() {
         lifecycleScope.launch {

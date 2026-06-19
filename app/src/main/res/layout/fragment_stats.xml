@@ -54,31 +54,17 @@
                     android:background="#5C5C5C"/>
 
 
-                <com.google.android.material.card.MaterialCardView
+                <org.osmdroid.views.MapView
+                    android:id="@+id/statsMapView"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="30dp"
-                    android:layout_marginTop="30dp"
-                    app:strokeWidth="2dp"
-                    app:strokeColor="@color/faded_primary"
-                    android:backgroundTint="@color/card_bg"
-                    android:id="@+id/map">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:text="MAP"
-                        android:fontFamily="@font/space"
-                        android:textSize="100dp"
-                        android:textColor="@color/secondary"/>
-                </com.google.android.material.card.MaterialCardView>
+                    android:layout_height="300dp"
+                    android:layout_margin="24dp" />
 
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="40dp"
+                    android:layout_marginTop="20dp"
                     android:orientation="horizontal">
 
 
@@ -112,18 +98,12 @@
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="2.4"
+                                    android:text="2.4Km"
+                                    android:id="@+id/tvDistance"
                                     android:textColor="@color/primary"
                                     android:fontFamily="@font/space"
-                                    android:textSize="40dp"/>
+                                    android:textSize="30dp"/>
 
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="KM"
-                                    android:textColor="@color/faded_primary"
-                                    android:fontFamily="@font/space"
-                                    android:paddingStart="3dp"/>
 
 
                             </LinearLayout>
@@ -159,9 +139,10 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="7:50"
+                                    android:id="@+id/tvTime"
                                     android:textColor="@color/tertiary"
                                     android:fontFamily="@font/space"
-                                    android:textSize="40dp"/>
+                                    android:textSize="30dp"/>
 
                         </LinearLayout>
                     </com.google.android.material.card.MaterialCardView>
@@ -201,6 +182,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="3:16"
+                            android:id="@+id/tvPace"
                             android:textColor="@color/tertiary"
                             android:fontFamily="@font/space"
                             android:textSize="50dp"/>

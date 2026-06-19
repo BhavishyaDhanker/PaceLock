@@ -9,9 +9,11 @@ import android.content.Intent
 import android.os.Binder
 import android.os.Build
 import android.os.IBinder
+import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.example.pacelock.LocationTracker
 import com.example.pacelock.PermissionHelper
+import com.example.pacelock.Data.Split
 import com.example.pacelock.R
 import com.example.pacelock.Run.RunActivity
 import com.example.pacelock.RunStatsCalculator
@@ -23,7 +25,6 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.osmdroid.util.GeoPoint
-import kotlin.concurrent.timer
 
 class RunTrackingService : Service() {
 
@@ -46,14 +47,19 @@ class RunTrackingService : Service() {
     private lateinit var notificationManager: NotificationManager
 
     val pathPoints = mutableListOf<GeoPoint>()
+    val splits = mutableListOf<Split>()
     var totalDistanceMeters = 0f
     var elapsedSeconds = 0L
     var isTracking = false
     var isPaused = false
+    var lastSplitDistance = 0f
+    var lastSplitTime = 0L
+    var lastSplitNumber = 0
+
 
     var onLocationUpdate: ((GeoPoint, Float) -> Unit)? = null
     var onTimerTick: ((Long) -> Unit)? = null
-
+    var onSplitTrack: ((List<Split>) -> Unit)? = null
     val onServiceError: ((String) -> Unit)? = null
 
     private var timerJob: Job? = null
@@ -73,13 +79,22 @@ class RunTrackingService : Service() {
         super.onCreate()
         locationTracker = LocationTracker(this)
         notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+        helper = PermissionHelper
 
         createNotificationChannel()
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+
+        Log.d(
+            "PACETEST",
+            "onStartCommand action=${intent?.action}"
+        )
         when(intent?.action){
-            ACTION_START -> startTracking()
+            ACTION_START -> {
+                Log.d("PACETEST", "ACTION_START received")
+                startTracking()
+            }
             ACTION_PAUSE -> pauseTracking()
             ACTION_RESUME -> resumeTracking()
             ACTION_FINISH -> finishTracking()
@@ -97,7 +112,9 @@ class RunTrackingService : Service() {
     }
 
     private fun startTracking() {
-        if(!helper.hasLocationPermissionGranted(this)){
+
+        Log.d("RUN_SERVICE", "startTracking called")
+        if(!helper.hasLocationPermission(this)){
             // check for permission first
             onServiceError?.invoke("Location Permission is required to Track Run")
             stopSelf()
@@ -107,9 +124,11 @@ class RunTrackingService : Service() {
         isTracking = true
         isPaused = false
 
-        if(helper.hasLocationPermissionGranted(this)){
+        if(helper.hasLocationPermission(this)){
             startForeground(NOTIFICATION_ID, buildNotification("0 m", "00:00:00"))
             onServiceError?.invoke("No Notification permission - Tracking may stop is screen is turned off")
+
+            Log.d("RUN_SERVICE", "startForeground called")
         }
 
         locationTracker.startTracking { location->
@@ -121,6 +140,20 @@ class RunTrackingService : Service() {
                 val segmentDistance = RunStatsCalculator.calculateLastSegmentDistance(pathPoints)
                 totalDistanceMeters += segmentDistance
 
+                while(totalDistanceMeters > lastSplitDistance + 1000f){
+                    lastSplitNumber++
+                    val split = Split(
+                        lastSplitNumber,
+                        elapsedSeconds - lastSplitTime,
+                        elapsedSeconds
+                    )
+
+                    splits.add(split)
+                    onSplitTrack?.invoke(splits.toList())
+                    lastSplitTime = elapsedSeconds
+                    lastSplitDistance += 1000f
+                }
+
                 onLocationUpdate?.invoke(point, segmentDistance)
 
                 updateNotification(
@@ -129,6 +162,8 @@ class RunTrackingService : Service() {
                 )
 
             }
+
+
         }
         startTimer()
 
@@ -137,16 +172,23 @@ class RunTrackingService : Service() {
     private fun startTimer() {
         timerJob?.cancel()
         timerJob = serviceScope.launch {
-            if(isTracking && !isPaused){
+            while(isTracking){
                 delay(1000L)
-                elapsedSeconds++
-                onTimerTick?.invoke(elapsedSeconds)
-                updateNotification(
-                    RunStatsCalculator.formatTime(elapsedSeconds),
-                    RunStatsCalculator.formatDistance(totalDistanceMeters)
-                )
 
+                if(!isPaused){
+
+                    elapsedSeconds++
+
+                    onTimerTick?.invoke(elapsedSeconds)
+
+                    updateNotification(
+                        RunStatsCalculator.formatTime(elapsedSeconds),
+                        RunStatsCalculator.formatDistance(totalDistanceMeters)
+                    )
+
+                }
             }
+
         }
     }
 
@@ -161,6 +203,8 @@ class RunTrackingService : Service() {
             Intent(this, RunActivity::class.java),
             PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
         )
+
+        Log.d("RUN_SERVICE", "buildNotification called")
 
         return NotificationCompat.Builder(this, NOTIFICATION_CHANEL_ID)
             .setContentTitle(if(!isPaused){"Run Tracking in Process" } else { "Run Tracking Paused"})
@@ -188,7 +232,7 @@ class RunTrackingService : Service() {
     private fun resumeTracking() {
         isPaused = false
         timerJob?.cancel()
-
+        startTimer()
         updateNotification(
             RunStatsCalculator.formatTime(elapsedSeconds),
             RunStatsCalculator.formatDistance(totalDistanceMeters)
