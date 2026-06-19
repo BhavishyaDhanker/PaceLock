@@ -9,6 +9,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.pacelock.Data.RunResult
 import com.example.pacelock.Data.Split
+import com.example.pacelock.RunRepository
 import com.example.pacelock.RunStatsCalculator
 import com.example.pacelock.service.RunTrackingService
 import kotlinx.coroutines.Job
