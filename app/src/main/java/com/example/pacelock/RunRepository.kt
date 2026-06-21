@@ -2,6 +2,7 @@ package com.example.pacelock
 
 import android.content.Context
 import android.location.Location
+import com.example.pacelock.Data.Split
 import com.example.pacelock.RoomDB.GeoPointTypeConverter
 import com.example.pacelock.RoomDB.RunDatabase
 import com.example.pacelock.RoomDB.RunEntity
@@ -36,7 +37,8 @@ class RunRepository(context : Context) {
     suspend fun saveRun(
         distanceMeters: Float,
         elapsedSeconds: Long,
-        pathPoints: List<GeoPoint>
+        pathPoints: List<GeoPoint>,
+        splits: List<Split>
     ): Long = withContext(Dispatchers.IO){
         val paceSecPerKm =
         if(distanceMeters > 0f){
@@ -51,6 +53,7 @@ class RunRepository(context : Context) {
             avgPaceSecPerKm = paceSecPerKm,
             timestamp = System.currentTimeMillis(),
             pathPointsJson = converter.fromGeoPointString(pathPoints),
+            splitsJson = converter.fromSplits(splits)
         )
 
         dao.insertRun(run)
@@ -61,8 +64,12 @@ class RunRepository(context : Context) {
         return dao.getAllRuns()
     }
 
-    fun getLatestRun(): Flow<RunEntity?>{
+    suspend fun getLatestRun(): RunEntity?{
         return dao.getLatestRun()
+    }
+
+    suspend fun getRunById(id: Long): RunEntity?{
+        return dao.getRunById(id)
     }
 
     fun getTotalDistance(): Flow<Float?>{

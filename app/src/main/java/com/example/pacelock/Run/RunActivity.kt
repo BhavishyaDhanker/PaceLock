@@ -158,15 +158,26 @@ class RunActivity : AppCompatActivity() {
 
         lifecycleScope.launch {
             viewModel.navigateToStats.collect { result->
+
                 result?.let {
-                    Intent(this@RunActivity, HomeActivity::class.java).apply {
-                        putExtra("run_result" , it)
-                        putExtra("open_fragment", "stats")
-                        startActivity(this)
+                    viewModel.saveRun {runId->
+
+                        runOnUiThread {
+
+                            Intent(this@RunActivity, HomeActivity::class.java).apply {
+                                putExtra("run_Id", runId)
+                                putExtra("open_fragment", "stats")
+                                startActivity(this)
+                            }
+
+                            viewModel.navigatedToStats()
+                            finish()
+                        }
+
                     }
-                    viewModel.navigatedToStats()
-                    finish()
                 }
+
+
 
             }
         }

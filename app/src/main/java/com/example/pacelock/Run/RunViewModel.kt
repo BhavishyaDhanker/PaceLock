@@ -271,4 +271,24 @@ class RunViewModel(application : Application) : AndroidViewModel(application) {
     fun updateSplits(splits: List<Split>) {
         _splits.value = splits
     }
+
+    fun saveRun(
+        onSaved: (Long) -> Unit
+    ) {
+
+        val result = _navigateToStats.value ?: return
+
+        viewModelScope.launch {
+
+            val runId = repo.saveRun(
+                result.distanceMeters,
+                result.elapsedSeconds,
+                result.pathPoints,
+                result.splits
+            )
+
+            onSaved(runId)
+        }
+    }
+
 }

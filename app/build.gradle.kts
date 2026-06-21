@@ -58,6 +58,7 @@ dependencies {
     implementation(libs.androidx.legacy.support.v4)
     implementation(libs.androidx.lifecycle.livedata.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    implementation(libs.firebase.crashlytics.buildtools)
     implementation(libs.material)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -70,9 +71,12 @@ dependencies {
     // Google Play Services - Fused Location
     implementation("com.google.android.gms:play-services-location:21.3.0")
 
-    // Room (for saving runs later - Phase 9)
+    // Room - Database
     implementation("androidx.room:room-runtime:2.6.1")
     implementation("androidx.room:room-ktx:2.6.1")
     kapt("androidx.room:room-compiler:2.6.1")
+
+    // Gson
+    implementation("com.google.code.gson:gson:2.13.1")
 }
 

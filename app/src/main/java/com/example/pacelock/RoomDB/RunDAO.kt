@@ -23,7 +23,7 @@ interface RunDAO {
     fun getAllRuns(): Flow<List<RunEntity>>
 
     @Query("SELECT * FROM runs ORDER BY timestamp DESC LIMIT 1")
-    fun getLatestRun(): Flow<RunEntity?>
+    suspend fun getLatestRun(): RunEntity?
 
     @Query("SELECT * FROM runs ORDER BY distance DESC LIMIT 1")
     fun getLongestRun(): Flow<RunEntity?>

@@ -43,14 +43,14 @@ class HomeActivity : AppCompatActivity() {
 
     private fun handleIncomingIntent() {
         val open_frag = intent.getStringExtra("open_fragment")
-        val runResult = intent.getParcelableExtra<RunResult>("run_result")
+        val runId = intent.getLongExtra("run_Id", -1)
 
-        if(open_frag == "stats" && runResult != null){
+        if(open_frag == "stats" && runId != -1L){
 
             binding.bottomNav.selectedItemId = R.id.stats
 
-            val statsFragment = StatsFragment.newInstance(runResult)
-            replaceFrag(statsFragment)
+
+            replaceFrag(StatsFragment.newInstance(runId))
         }else{
             replaceFrag(HomeFragment())
         }
