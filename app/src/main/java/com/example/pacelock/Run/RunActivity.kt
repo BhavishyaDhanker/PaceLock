@@ -301,16 +301,14 @@ class RunActivity : AppCompatActivity() {
         finish()
     }
 
-    override fun onDestroy(){
+    override fun onDestroy() {
         super.onDestroy()
 
-        if(isBound){
+        if (isBound) {
             unbindService(serviceConnection)
             isBound = false
         }
 
         binding.mapView.onDetach()
     }
-
-    
 }
