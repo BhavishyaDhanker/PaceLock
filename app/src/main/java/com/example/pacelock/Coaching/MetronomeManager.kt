@@ -60,12 +60,12 @@ class MetronomeManager(
         }
     }
 
-    private fun stop() {
+    fun stop() {
         metronomeJob?.cancel()
         metronomeJob = null
     }
 
-    private fun shutdown(){
+    fun shutdown(){
         stop()
         soundPool?.release()
         soundPool = null

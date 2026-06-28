@@ -24,7 +24,7 @@
             android:name=".Run.RunActivity"
             android:exported="false" />
         <service
-            android:name=".service.RunTrackingService"
+            android:name="RunTrackingService"
             android:foregroundServiceType="location"
             android:exported="false" />
         <activity

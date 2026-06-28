@@ -1,209 +1,394 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".Configration.ConfigurationFragment">
+    android:background="#111111"
+    android:fillViewport="true">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:background="@color/neutral">
+        android:paddingBottom="24dp">
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        <!-- ================= HEADER ================= -->
 
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp">
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="PACELOCK"
-            android:textColor="@color/primary"
-            android:fontFamily="@font/space"
-            android:textSize="40sp"
-            android:paddingStart="24dp"
-            android:textStyle="italic" />
-
-
-        <ImageView
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_marginTop="5dp"
-            android:src="@drawable/ic_person"/>
-
-
-    </LinearLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:background="#5C5C5C"/>
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="SYSTEM PREFRENCES"
-        android:fontFamily="@font/lexend"
-        android:textColor="@color/primary"
-        android:paddingTop="40dp"
-        android:paddingStart="20dp"/>
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="CONFIGURATION"
-        android:textSize="35sp"
-        android:fontFamily="@font/space"
-        android:textColor="@color/tertiary"
-        android:letterSpacing="-0.05"
-        android:paddingStart="20dp"/>
-
-
-        <TextView
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="PERFORMANCE TARGETS"
-            android:fontFamily="@font/lexend"
-            android:textColor="@color/faded_primary"
-            android:paddingTop="40dp"
-            android:paddingStart="20dp"/>
+            android:layout_height="72dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingHorizontal="20dp">
 
-        <com.google.android.material.card.MaterialCardView
+            <ImageView
+                android:layout_width="26dp"
+                android:layout_height="26dp"
+                android:src="@drawable/ic_speedometer"
+                app:tint="#D4FF00" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:layout_weight="1"
+                android:text="PACELOCK"
+                android:textColor="#D4FF00"
+                android:textSize="26sp"
+                android:textStyle="italic|bold" />
+
+            <ImageView
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:src="@drawable/ic_person"
+                app:tint="@color/primary" />
+
+        </LinearLayout>
+
+        <View
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="20dp"
-            android:layout_marginTop="30dp"
-            app:strokeWidth="2dp"
-            app:strokeColor="@color/faded_primary"
-            android:backgroundTint="@color/card_bg"
-            android:id="@+id/paceTar">
+            android:layout_height="1dp"
+            android:background="#242424" />
+
+        <!-- ================= TITLE ================= -->
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="PACE TARGET"
-            android:fontFamily="@font/space"
-            android:textSize="60dp"
-            android:textColor="@color/secondary"/>
-        </com.google.android.material.card.MaterialCardView>
-
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="20dp"
-            android:layout_marginTop="30dp"
-            app:strokeWidth="2dp"
-            app:strokeColor="@color/faded_primary"
-            android:backgroundTint="@color/card_bg"
-            android:id="@+id/cadenceTar">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="CADENCE TARGET"
-                android:fontFamily="@font/space"
-                android:textSize="60dp"
-                android:textColor="@color/secondary"/>
-        </com.google.android.material.card.MaterialCardView>
-
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="26dp"
+            android:text="SYSTEM PREFERENCES"
+            android:textAllCaps="true"
+            android:textColor="#D4FF00"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.15" />
 
         <TextView
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="COACHING FEEDBACK"
-            android:fontFamily="@font/lexend"
-            android:textColor="@color/faded_primary"
-            android:paddingTop="40dp"
-            android:paddingStart="20dp"/>
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="6dp"
+            android:text="CONFIGURATION"
+            android:textColor="#F2F2F2"
+            android:textSize="34sp"
+            android:textStyle="bold" />
 
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="20dp"
-            android:layout_marginTop="30dp"
-            app:strokeWidth="2dp"
-            app:strokeColor="@color/faded_primary"
-            android:backgroundTint="@color/card_bg"
-            android:id="@+id/vibrationToggle">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="VIBRATION"
-                android:fontFamily="@font/space"
-                android:textSize="60dp"
-                android:textColor="@color/secondary"/>
-        </com.google.android.material.card.MaterialCardView>
-
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="20dp"
-            android:layout_marginTop="30dp"
-            app:strokeWidth="2dp"
-            app:strokeColor="@color/faded_primary"
-            android:backgroundTint="@color/card_bg"
-            android:id="@+id/voiceToggle">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="VOICE"
-                android:fontFamily="@font/space"
-                android:textSize="60dp"
-                android:textColor="@color/secondary"/>
-        </com.google.android.material.card.MaterialCardView>
-
+        <!-- ================= SECTION ================= -->
 
         <TextView
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="SYSTEM"
-            android:fontFamily="@font/lexend"
-            android:textColor="@color/faded_primary"
-            android:paddingTop="40dp"
-            android:paddingStart="20dp"/>
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="34dp"
+            android:text="◎ PERFORMANCE TARGETS"
+            android:textAllCaps="true"
+            android:textColor="#C9C9B8"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.15" />
+
+        <!-- ================= PACE CARD ================= -->
 
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="20dp"
-            android:layout_marginTop="30dp"
-            app:strokeWidth="2dp"
-            app:strokeColor="@color/faded_primary"
-            android:backgroundTint="@color/card_bg"
-            android:id="@+id/unitSelection">
+            android:layout_marginHorizontal="18dp"
+            android:layout_marginTop="18dp"
+            app:cardBackgroundColor="#141414"
+            app:cardCornerRadius="14dp"
+            app:strokeColor="#222222"
+            app:strokeWidth="1dp">
 
-            <TextView
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="METRIC/ IMPERIAL"
-                android:fontFamily="@font/space"
-                android:textSize="60dp"
-                android:textColor="@color/secondary"/>
+                android:orientation="vertical"
+                android:padding="20dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="PACE TARGET"
+                        android:textAllCaps="true"
+                        android:textColor="#00E6FF"
+                        android:textSize="15sp"
+                        android:textStyle="bold"
+                        android:letterSpacing="0.08" />
+
+                    <ImageView
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:src="@drawable/ic_timer"
+                        app:tint="#008C95" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="26dp"
+                    android:gravity="bottom">
+
+                    <TextView
+                        android:id="@+id/tvPaceValue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="4:30"
+                        android:textColor="#F5F5F5"
+                        android:textSize="60sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginBottom="12dp"
+                        android:text="MIN/KM"
+                        android:textAllCaps="true"
+                        android:textColor="#C8C8B5"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+                <com.google.android.material.slider.Slider
+                    android:id="@+id/sliderPace"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="18dp"
+                    android:value="270"
+                    android:valueFrom="180"
+                    android:valueTo="480"
+                    app:haloColor="#66D4FF00"
+                    app:thumbColor="#D4FF00"
+                    app:trackColorActive="#505050"
+                    app:trackColorInactive="#3A3A3A" />
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- ================= CADENCE CARD ================= -->
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="18dp"
+            android:layout_marginTop="18dp"
+            app:cardBackgroundColor="#141414"
+            app:cardCornerRadius="14dp"
+            app:strokeColor="#222222"
+            app:strokeWidth="1dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="20dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="CADENCE TARGET"
+                        android:textAllCaps="true"
+                        android:textColor="#00E6FF"
+                        android:textSize="15sp"
+                        android:textStyle="bold" />
+
+                    <ImageView
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:src="@drawable/ic_cadence"
+                        app:tint="#008C95" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="26dp"
+                    android:gravity="bottom">
+
+                    <TextView
+                        android:id="@+id/tvCadence"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="180"
+                        android:textColor="#F5F5F5"
+                        android:textSize="60sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginBottom="12dp"
+                        android:text="SPM"
+                        android:textAllCaps="true"
+                        android:textColor="#C8C8B5"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+                <com.google.android.material.slider.Slider
+                    android:id="@+id/sliderCadence"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="18dp"
+                    android:value="180"
+                    android:valueFrom="140"
+                    android:valueTo="220"
+                    app:haloColor="#66D4FF00"
+                    app:thumbColor="#D4FF00"
+                    app:trackColorActive="#505050"
+                    app:trackColorInactive="#3A3A3A" />
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- ================= FEEDBACK ================= -->
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="40dp"
+            android:text="◉ COACHING FEEDBACK"
+            android:textAllCaps="true"
+            android:textColor="#C9C9B8"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.15" />
+
+        <!-- Vibration -->
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="18dp"
+            android:layout_marginTop="16dp"
+            app:cardBackgroundColor="#171717"
+            app:cardCornerRadius="12dp"
+            app:strokeColor="#222222">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="72dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingHorizontal="18dp">
+
+                <ImageView
+                    android:layout_width="42dp"
+                    android:layout_height="42dp"
+                    android:src="@drawable/ic_vibration"
+                    app:tint="#C5C5B5" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="14dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content"
+                        android:text="Vibration feedback"
+                        android:textColor="#FFFFFF"
+                        android:textSize="22sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content"
+                        android:text="Haptic alerts for pace deviation"
+                        android:textColor="#9F9F9F"
+                        android:textSize="14sp" />
+
+                </LinearLayout>
+
+                <com.google.android.material.materialswitch.MaterialSwitch
+                    android:id="@+id/switchVibration"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true" />
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Voice -->
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="18dp"
+            android:layout_marginTop="14dp"
+            app:cardBackgroundColor="#171717"
+            app:cardCornerRadius="12dp"
+            app:strokeColor="#222222">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="72dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingHorizontal="18dp">
+
+                <ImageView
+                    android:layout_width="42dp"
+                    android:layout_height="42dp"
+                    android:src="@drawable/ic_voice"
+                    app:tint="#C5C5B5" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="14dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content"
+                        android:text="Voice coaching"
+                        android:textColor="#FFFFFF"
+                        android:textSize="22sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content"
+                        android:text="Real-time audio performance cues"
+                        android:textColor="#9F9F9F"
+                        android:textSize="14sp" />
+
+                </LinearLayout>
+
+                <com.google.android.material.materialswitch.MaterialSwitch
+                    android:id="@+id/switchVoice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+
         </com.google.android.material.card.MaterialCardView>
 
     </LinearLayout>
-    </ScrollView>
-    </LinearLayout>
 
-</FrameLayout>
+</androidx.core.widget.NestedScrollView>

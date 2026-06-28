@@ -63,6 +63,8 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.junit)
+    implementation("com.google.android.material:material:1.13.0")
+    implementation("androidx.datastore:datastore-preferences:1.1.7")
 
 
     // OSMDroid - Map

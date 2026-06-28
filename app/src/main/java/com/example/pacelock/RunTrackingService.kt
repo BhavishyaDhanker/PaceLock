@@ -1,22 +1,30 @@
-package com.example.pacelock.service
+package com.example.pacelock
 
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Service
+import android.content.Context
 import android.content.Intent
 import android.os.Binder
 import android.os.Build
 import android.os.IBinder
 import android.util.Log
 import androidx.core.app.NotificationCompat
+import com.example.pacelock.Coaching.CoachingConfig
 import com.example.pacelock.LocationTracker
 import com.example.pacelock.PermissionHelper
 import com.example.pacelock.Data.Split
 import com.example.pacelock.R
 import com.example.pacelock.Run.RunActivity
 import com.example.pacelock.RunStatsCalculator
+import com.example.pacelock.Coaching.CoachingEngine
+import com.example.pacelock.Coaching.HapticsManager
+import com.example.pacelock.Coaching.MetronomeManager
+import com.example.pacelock.Coaching.TTSManager
+import com.example.pacelock.Data.CoachingSettings
+import com.example.pacelock.Data.PaceWindowEntry
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -25,8 +33,14 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.osmdroid.util.GeoPoint
+import java.util.ArrayDeque
+import kotlin.time.Duration.Companion.milliseconds
 
 class RunTrackingService : Service() {
+
+    //──────────────────────────────────────────────────────────────
+    // Binder
+    //──────────────────────────────────────────────────────────────
 
     private val binder = RunServiceBinder()
 
@@ -34,38 +48,39 @@ class RunTrackingService : Service() {
         fun getService(): RunTrackingService = this@RunTrackingService
     }
 
-    private val serviceScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
+    //──────────────────────────────────────────────────────────────
+    // Coroutine Scope
+    //──────────────────────────────────────────────────────────────
 
+    private val serviceScope =
+        CoroutineScope(SupervisorJob() + Dispatchers.Main)
 
-                // serviceScope is a coroutineScope like viewModelScope or lifeCycleScope,but it
-                // is declared by us rather than being given by the android itself
-                // SupervisorJob controls the lifecycles of all coroutines inside this scope
-                // Dispatchers.Main means that the coroutine runs on main thread
+    //──────────────────────────────────────────────────────────────
+    // Core Components
+    //──────────────────────────────────────────────────────────────
 
     private lateinit var locationTracker: LocationTracker
-    private lateinit var helper: PermissionHelper
     private lateinit var notificationManager: NotificationManager
+    private lateinit var helper: PermissionHelper
 
-    val pathPoints = mutableListOf<GeoPoint>()
-    val splits = mutableListOf<Split>()
-    var totalDistanceMeters = 0f
-    var elapsedSeconds = 0L
-    var isTracking = false
-    var isPaused = false
-    var lastSplitDistance = 0f
-    var lastSplitTime = 0L
-    var lastSplitNumber = 0
+    // New managers
+    private lateinit var ttsManager: TTSManager
+    private lateinit var hapticsManager: HapticsManager
+    private lateinit var metronomeManager: MetronomeManager
 
+    // Coaching
+    private var coachingEngine: CoachingEngine? = null
+    private var currentSettings: CoachingSettings? = null
 
-    var onLocationUpdate: ((GeoPoint, Float) -> Unit)? = null
-    var onTimerTick: ((Long) -> Unit)? = null
-    var onSplitTrack: ((List<Split>) -> Unit)? = null
-    val onServiceError: ((String) -> Unit)? = null
+    //──────────────────────────────────────────────────────────────
+    // Pace Window
+    //──────────────────────────────────────────────────────────────
 
-    private var timerJob: Job? = null
-
+    private val paceWindow = ArrayDeque<PaceWindowEntry>()
 
     companion object {
+        private const val PACE_WINDOW_DURATION_MS = 5000L
+
         const val NOTIFICATION_CHANEL_ID = "Run Tracking Service"
         const val NOTIFICATION_ID = 1
 
@@ -75,28 +90,145 @@ class RunTrackingService : Service() {
         const val ACTION_FINISH = "ACTION_FINISH"
     }
 
+    //──────────────────────────────────────────────────────────────
+    // Run State
+    //──────────────────────────────────────────────────────────────
+
+    val pathPoints = mutableListOf<GeoPoint>()
+
+    val splits = mutableListOf<Split>()
+
+    var totalDistanceMeters = 0f
+
+    var elapsedSeconds = 0L
+
+    var isTracking = false
+
+    var isPaused = false
+
+    var lastSplitDistance = 0f
+
+    var lastSplitTime = 0L
+
+    var lastSplitNumber = 0
+
+    //──────────────────────────────────────────────────────────────
+    // Callbacks
+    //──────────────────────────────────────────────────────────────
+
+    /**
+     * GeoPoint
+     * Segment Distance
+     * Current Pace (sec/km)
+     */
+    var onLocationUpdate:
+            ((GeoPoint, Float, Float) -> Unit)? = null
+
+    var onTimerTick:
+            ((Long) -> Unit)? = null
+
+    var onSplitTrack:
+            ((List<Split>) -> Unit)? = null
+
+    val onServiceError:
+            ((String) -> Unit)? = null
+
+    //──────────────────────────────────────────────────────────────
+    // Timer
+    //──────────────────────────────────────────────────────────────
+
+    private var timerJob: Job? = null
+
+    //──────────────────────────────────────────────────────────────
+// Lifecycle
+//──────────────────────────────────────────────────────────────
+
     override fun onCreate() {
         super.onCreate()
+
         locationTracker = LocationTracker(this)
-        notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+
+        notificationManager =
+            getSystemService(Context.NOTIFICATION_SERVICE)
+                    as NotificationManager
+
         helper = PermissionHelper
+
+        ttsManager = TTSManager(this)
+
+        hapticsManager = HapticsManager(this)
+
+        metronomeManager =
+            MetronomeManager(this, hapticsManager)
 
         createNotificationChannel()
     }
 
-    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+    /**
+     * Called by RunActivity after binding to the service.
+     *
+     * This supplies the latest coaching settings to the service.
+     */
+    fun applySettings(settings: CoachingSettings) {
+
+        currentSettings = settings
+
+        if (settings.targetPacePerSecPerKm > 0f) {
+
+            coachingEngine = CoachingEngine(
+                CoachingConfig(
+                    targetPacePerSecPerKm =
+                        settings.targetPacePerSecPerKm
+                )
+            )
+
+        } else {
+
+            coachingEngine = null
+
+        }
+
+        if (settings.metronomeEnabled) {
+
+            metronomeManager.start(
+                settings.metronomeBpm,
+                settings.metronomeUseSound
+            )
+
+        } else {
+
+            metronomeManager.stop()
+
+        }
+    }
+
+    override fun onStartCommand(
+        intent: Intent?,
+        flags: Int,
+        startId: Int
+    ): Int {
 
         Log.d(
             "PACETEST",
             "onStartCommand action=${intent?.action}"
         )
-        when(intent?.action){
+
+        when (intent?.action) {
+
             ACTION_START -> {
-                Log.d("PACETEST", "ACTION_START received")
+
+                Log.d(
+                    "PACETEST",
+                    "ACTION_START received"
+                )
+
                 startTracking()
             }
+
             ACTION_PAUSE -> pauseTracking()
+
             ACTION_RESUME -> resumeTracking()
+
             ACTION_FINISH -> finishTracking()
         }
 
@@ -106,17 +238,28 @@ class RunTrackingService : Service() {
     override fun onBind(intent: Intent): IBinder = binder
 
     override fun onDestroy() {
+
         super.onDestroy()
-        serviceScope.cancel()
+
+        timerJob?.cancel()
+
         locationTracker.stopTracking()
+
+        metronomeManager.shutdown()
+
+        ttsManager.shutdown()
+
+        coachingEngine?.reset()
+
+        serviceScope.cancel()
     }
 
     private fun startTracking() {
 
         Log.d("RUN_SERVICE", "startTracking called")
-        if(!helper.hasLocationPermission(this)){
-            // check for permission first
-            onServiceError?.invoke("Location Permission is required to Track Run")
+
+        if (!helper.hasLocationPermission(this)) {
+            onServiceError?.invoke("Location permission is required to track run.")
             stopSelf()
             return
         }
@@ -124,71 +267,174 @@ class RunTrackingService : Service() {
         isTracking = true
         isPaused = false
 
-        if(helper.hasLocationPermission(this)){
-            startForeground(NOTIFICATION_ID, buildNotification("0 m", "00:00:00"))
-            onServiceError?.invoke("No Notification permission - Tracking may stop is screen is turned off")
+        pathPoints.clear()
+        splits.clear()
+        paceWindow.clear()
 
-            Log.d("RUN_SERVICE", "startForeground called")
-        }
+        totalDistanceMeters = 0f
+        elapsedSeconds = 0L
 
-        locationTracker.startTracking { location->
-            val point =  GeoPoint(location.latitude, location.longitude)
+        lastSplitDistance = 0f
+        lastSplitTime = 0L
+        lastSplitNumber = 0
 
-            if(isTracking && !isPaused){
+        startForeground(
+            NOTIFICATION_ID,
+            buildNotification("0 m", "00:00:00")
+        )
 
-                pathPoints.add(point)
-                val segmentDistance = RunStatsCalculator.calculateLastSegmentDistance(pathPoints)
-                totalDistanceMeters += segmentDistance
+        locationTracker.startTracking { location ->
 
-                while(totalDistanceMeters > lastSplitDistance + 1000f){
-                    lastSplitNumber++
-                    val split = Split(
-                        lastSplitNumber,
-                        elapsedSeconds - lastSplitTime,
-                        elapsedSeconds
-                    )
+            if (!isTracking || isPaused) return@startTracking
 
-                    splits.add(split)
-                    onSplitTrack?.invoke(splits.toList())
-                    lastSplitTime = elapsedSeconds
-                    lastSplitDistance += 1000f
-                }
+            val point = GeoPoint(
+                location.latitude,
+                location.longitude
+            )
 
-                onLocationUpdate?.invoke(point, segmentDistance)
+            pathPoints.add(point)
 
-                updateNotification(
-                    RunStatsCalculator.formatTime(elapsedSeconds),
-                    RunStatsCalculator.formatDistance(totalDistanceMeters)
+            //----------------------------------------------------------
+            // Sliding Pace Window
+            //----------------------------------------------------------
+
+            val now = location.time
+
+            paceWindow.addLast(
+                PaceWindowEntry(
+                    point,
+                    now
                 )
+            )
 
+            while (
+                paceWindow.isNotEmpty() &&
+                now - paceWindow.first().timestamp >
+                PACE_WINDOW_DURATION_MS
+            ) {
+                paceWindow.removeFirst()
             }
 
+            //----------------------------------------------------------
+            // Current Pace
+            //----------------------------------------------------------
 
+            val currentPaceSecPerKm =
+                RunStatsCalculator.calculateCurrentPace(
+                    paceWindow.toList()
+                )
+
+            //----------------------------------------------------------
+            // Distance
+            //----------------------------------------------------------
+
+            val segmentDistance =
+                RunStatsCalculator.calculateLastSegmentDistance(
+                    pathPoints
+                )
+
+            totalDistanceMeters += segmentDistance
+
+            //----------------------------------------------------------
+            // Splits
+            //----------------------------------------------------------
+
+            while (
+                totalDistanceMeters >=
+                lastSplitDistance + 1000f
+            ) {
+
+                lastSplitNumber++
+
+                val split = Split(
+                     lastSplitNumber,
+                    elapsedSeconds - lastSplitTime,
+                    elapsedSeconds
+                )
+
+                splits.add(split)
+
+                onSplitTrack?.invoke(
+                    splits.toList()
+                )
+
+                lastSplitTime = elapsedSeconds
+                lastSplitDistance += 1000f
+            }
+
+            //----------------------------------------------------------
+            // Notify Activity / ViewModel
+            //----------------------------------------------------------
+
+            onLocationUpdate?.invoke(
+                point,
+                segmentDistance,
+                currentPaceSecPerKm
+            )
+
+            //----------------------------------------------------------
+            // Coaching
+            //----------------------------------------------------------
+
+            coachingEngine
+                ?.evaluate(
+                    distanceMeters = totalDistanceMeters,
+                    currentPacePerSecPerKm = currentPaceSecPerKm,
+                    elapsedSeconds = elapsedSeconds
+                )
+                ?.let { cue ->
+
+                    val settings = currentSettings
+
+                    if (settings?.ttsEnabled == true) {
+                        ttsManager.speak(cue.message)
+                    }
+
+                    if (settings?.hapticsEnabled == true) {
+                        hapticsManager.vibrate(
+                            cue.hapticPattern
+                        )
+                    }
+                }
+
+            //----------------------------------------------------------
+            // Notification
+            //----------------------------------------------------------
+
+            updateNotification(
+                RunStatsCalculator.formatDistance(
+                    totalDistanceMeters
+                ),
+                RunStatsCalculator.formatTime(
+                    elapsedSeconds
+                )
+            )
         }
-        startTimer()
 
+        startTimer()
     }
 
     private fun startTimer() {
+
         timerJob?.cancel()
+
         timerJob = serviceScope.launch {
-            while(isTracking){
-                delay(1000L)
 
-                if(!isPaused){
+            while (isTracking) {
 
-                    elapsedSeconds++
+                delay(1000L.milliseconds)
 
-                    onTimerTick?.invoke(elapsedSeconds)
+                if (isPaused) continue
 
-                    updateNotification(
-                        RunStatsCalculator.formatTime(elapsedSeconds),
-                        RunStatsCalculator.formatDistance(totalDistanceMeters)
-                    )
+                elapsedSeconds++
 
-                }
+                onTimerTick?.invoke(elapsedSeconds)
+
+                updateNotification(
+                    RunStatsCalculator.formatDistance(totalDistanceMeters),
+                    RunStatsCalculator.formatTime(elapsedSeconds)
+                )
             }
-
         }
     }
 
@@ -218,36 +464,69 @@ class RunTrackingService : Service() {
     }
 
     private fun pauseTracking() {
+
+        if (!isTracking || isPaused)
+            return
+
         isPaused = true
+
         timerJob?.cancel()
 
-        updateNotification(
-            RunStatsCalculator.formatTime(elapsedSeconds),
-            RunStatsCalculator.formatDistance(totalDistanceMeters),
-            isPaused
-        )
+        metronomeManager.stop()
 
+        updateNotification(
+            RunStatsCalculator.formatDistance(totalDistanceMeters),
+            RunStatsCalculator.formatTime(elapsedSeconds),
+            true
+        )
     }
 
     private fun resumeTracking() {
-        isPaused = false
-        timerJob?.cancel()
-        startTimer()
-        updateNotification(
-            RunStatsCalculator.formatTime(elapsedSeconds),
-            RunStatsCalculator.formatDistance(totalDistanceMeters)
-        )
 
+        if (!isTracking || !isPaused)
+            return
+
+        isPaused = false
+
+        currentSettings?.let {
+
+            if (it.metronomeEnabled) {
+
+                metronomeManager.start(
+                    it.metronomeBpm,
+                    it.metronomeUseSound
+                )
+            }
+        }
+
+        startTimer()
+
+        updateNotification(
+            RunStatsCalculator.formatDistance(totalDistanceMeters),
+            RunStatsCalculator.formatTime(elapsedSeconds)
+        )
     }
 
     private fun finishTracking() {
-        isTracking = false
-        isPaused = true
-        startTimer()
-        locationTracker.stopTracking()
-        stopForeground(STOP_FOREGROUND_REMOVE)
-        stopSelf()
 
+        isTracking = false
+        isPaused = false
+
+        timerJob?.cancel()
+
+        locationTracker.stopTracking()
+
+        metronomeManager.shutdown()
+
+        ttsManager.shutdown()
+
+        coachingEngine?.reset()
+
+        paceWindow.clear()
+
+        stopForeground(STOP_FOREGROUND_REMOVE)
+
+        stopSelf()
     }
 
     private fun createNotificationChannel() {

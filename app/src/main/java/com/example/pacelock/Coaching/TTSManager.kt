@@ -29,7 +29,7 @@ class TTSManager(context: Context): TextToSpeech.OnInitListener{
         }
     }
 
-    private fun speak(message: String) {
+    fun speak(message: String) {
         if(isReady){
             tts.speak(
                 message,
