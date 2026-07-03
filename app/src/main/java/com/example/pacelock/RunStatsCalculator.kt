@@ -84,7 +84,7 @@ object RunStatsCalculator {
 
         return String.format(
             Locale.getDefault(),
-            "%d:%02d min/km",
+            "%d:%02d",
             paceMinutes,
             paceSeconds
         )

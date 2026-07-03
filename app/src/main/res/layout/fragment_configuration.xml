@@ -165,11 +165,77 @@
                     android:layout_marginTop="18dp"
                     android:value="270"
                     android:valueFrom="180"
-                    android:valueTo="480"
+                    android:valueTo="540"
                     app:haloColor="#66D4FF00"
                     app:thumbColor="#D4FF00"
                     app:trackColorActive="#505050"
                     app:trackColorInactive="#3A3A3A" />
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="18dp"
+            android:layout_marginTop="18dp"
+            app:cardBackgroundColor="#141414"
+            app:cardCornerRadius="14dp"
+            app:strokeColor="#222222"
+            app:strokeWidth="1dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="20dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="PACE TOLERANCE"
+                        android:textAllCaps="true"
+                        android:textColor="#00E6FF"
+                        android:textSize="15sp"
+                        android:textStyle="bold" />
+
+                    <ImageView
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:src="@drawable/ic_target"
+                        app:tint="#008C95" />
+
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/tvTolerance"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="22dp"
+                    android:text="±8 seconds"
+                    android:textColor="#F5F5F5"
+                    android:textSize="36sp"
+                    android:textStyle="bold" />
+
+                <com.google.android.material.slider.Slider
+                    android:id="@+id/sliderTolerance"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="18dp"
+                    android:value="8"
+                    android:valueFrom="2"
+                    android:valueTo="20"
+                    android:stepSize="1"
+                    app:thumbColor="#D4FF00"
+                    app:trackColorActive="#505050"
+                    app:trackColorInactive="#3A3A3A"/>
 
             </LinearLayout>
 
@@ -255,6 +321,45 @@
                     app:thumbColor="#D4FF00"
                     app:trackColorActive="#505050"
                     app:trackColorInactive="#3A3A3A" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="20dp"
+                    android:background="#2A2A2A"/>
+
+                <com.google.android.material.materialswitch.MaterialSwitch
+                    android:id="@+id/switchMetronome"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="18dp"
+                    android:text="Enable Metronome"
+                    android:textColor="#FFFFFF"
+                    android:textSize="16sp"/>
+
+                <RadioGroup
+                    android:id="@+id/radioMetronomeType"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:orientation="horizontal">
+
+                    <RadioButton
+                        android:id="@+id/radioSound"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Sound"
+                        android:textColor="#FFFFFF"/>
+
+                    <RadioButton
+                        android:id="@+id/radioVibration"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="18dp"
+                        android:text="Vibration"
+                        android:textColor="#FFFFFF"/>
+
+                </RadioGroup>
 
             </LinearLayout>
 

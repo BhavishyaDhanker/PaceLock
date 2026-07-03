@@ -22,6 +22,5 @@ class StatsViewModel(
     }
 
     val allRuns = repo.getAllRuns()
-    val totalDistance = repo.getTotalDistance()
     val totalRuns = repo.getTotalRuns()
 }

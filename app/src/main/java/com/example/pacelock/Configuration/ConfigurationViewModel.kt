@@ -1,8 +1,7 @@
-package com.example.pacelock.Configration
+package com.example.pacelock.Configuration
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.pacelock.Data.CoachingSettings
 import kotlinx.coroutines.flow.SharingStarted
@@ -54,5 +53,10 @@ class ConfigurationViewModel(application: Application) : AndroidViewModel(applic
         }
     }
 
+    fun updateTargetPaceTolerance(flag: Float){
+        viewModelScope.launch {
+            repo.updateTargetPaceTolerance(flag)
+        }
+    }
 
 }

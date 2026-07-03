@@ -9,8 +9,10 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.pacelock.Data.RunResult
 import com.example.pacelock.RoomDB.GeoPointTypeConverter
+import com.example.pacelock.RoomDB.RunEntity
 import com.example.pacelock.RunStatsCalculator
 import com.example.pacelock.databinding.FragmentStatsBinding
 import kotlinx.coroutines.launch
@@ -24,6 +26,8 @@ class StatsFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val viewModel: StatsViewModel by viewModels()
+    private lateinit var runResult : RunResult
+    private lateinit var mySplitsAdapter: SplitsAdapter
 
     private val converter = GeoPointTypeConverter()
     private val calculator = RunStatsCalculator
@@ -62,7 +66,16 @@ class StatsFragment : Fragment() {
     ) {
         super.onViewCreated(view, savedInstanceState)
 
+        setupRecyclerView()
         loadRun()
+
+    }
+
+    private fun setupRecyclerView() {
+        mySplitsAdapter = SplitsAdapter(emptyList())
+
+        binding.recycler.layoutManager = LinearLayoutManager(requireContext())
+        binding.recycler.adapter = mySplitsAdapter
     }
 
     private fun loadRun() {
@@ -79,7 +92,7 @@ class StatsFragment : Fragment() {
 
             run?.let {
 
-                val runResult = RunResult(
+                runResult = RunResult(
                     distanceMeters = it.distance,
                     elapsedSeconds = it.elapsed,
                     pathPoints = converter.toGeoPointString(it.pathPointsJson),
@@ -91,6 +104,8 @@ class StatsFragment : Fragment() {
 
             } ?: showEmptyState()
         }
+
+
     }
 
     private fun showEmptyState() {
@@ -159,6 +174,8 @@ class StatsFragment : Fragment() {
                 result.distanceMeters,
                 result.elapsedSeconds
             )
+
+        mySplitsAdapter.updateRecyclerView(runResult.splits )
     }
 
     override fun onDestroyView() {

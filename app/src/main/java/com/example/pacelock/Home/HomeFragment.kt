@@ -15,6 +15,7 @@ import com.example.pacelock.R
 import com.example.pacelock.Run.RunActivity
 import com.example.pacelock.databinding.FragmentHomeBinding
 import kotlinx.coroutines.launch
+import java.util.Locale
 
 class HomeFragment : Fragment() {
 
@@ -41,19 +42,68 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setupViews()
         setupListeners()
         observeStates()
     }
 
+    private fun setupViews() {
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.loadLatestRun()
+            viewModel.loadWeaklyDistance()
+        }
+    }
+
     private fun observeStates() {
-        lifecycleScope.launch{
+        viewLifecycleOwner.lifecycleScope.launch{
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.navigate.collect {
-                        val intent = Intent(requireContext(), RunActivity::class.java)
-                        startActivity(intent)
+                        Intent(requireContext(), RunActivity::class.java).apply{
+                            putExtra("NEW_RUN", true)
+                            startActivity(this)
+                        }
+
                 }
             }
         }
+
+        viewLifecycleOwner.lifecycleScope.launch{
+            repeatOnLifecycle(Lifecycle.State.STARTED){
+                viewModel.lastRunDistance.collect{distance->
+                    if (distance != null) {
+                        if (distance < 1000f){
+                            binding.tvLastRunDistance.text = String.format(
+                                Locale.getDefault(),
+                                "%.1f",
+                                distance
+                            )
+
+                            binding.tvRunUnit.text = "M"
+                        }
+                        else {
+                            binding.tvLastRunDistance.text = String.format(
+                                Locale.getDefault(),
+                                "%.2f",
+                                distance/1000f
+                            )
+
+                            binding.tvRunUnit.text = "KM"
+                        }
+                    }
+                }
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch{
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.lastRunPace.collect {
+                    binding.tvLastRunPace.text = it
+                }
+            }
+        }
+
+
     }
 
     private fun setupListeners() {

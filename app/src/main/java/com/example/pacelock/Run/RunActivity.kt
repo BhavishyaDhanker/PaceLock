@@ -9,6 +9,7 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.os.Bundle
 import android.os.IBinder
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -16,7 +17,7 @@ import androidx.lifecycle.lifecycleScope
 import com.example.pacelock.HomeActivity
 import com.example.pacelock.PermissionHelper
 import com.example.pacelock.databinding.ActivityRunBinding
-import com.example.pacelock.Configration.ConfigurationRepository
+import com.example.pacelock.Configuration.ConfigurationRepository
 import com.example.pacelock.RunTrackingService
 import kotlinx.coroutines.launch
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
@@ -50,10 +51,24 @@ class RunActivity : AppCompatActivity() {
 
         settingsRepository = ConfigurationRepository(this)
 
+
+
         setupMap()
         setupButtons()
         observeStates()
-        checkPermissionThenStart()
+
+        val isNewRun = intent.getBooleanExtra("NEW_RUN", false)
+
+        if (isNewRun) {
+
+            checkPermissionThenStart()
+
+        } else {
+
+            bindTrackingService()
+
+            viewModel.startRun()
+        }
     }
 
     //──────────────────────────────────────────────
@@ -202,9 +217,8 @@ class RunActivity : AppCompatActivity() {
         }
 
         /*
-         * If you later add another TextView
-         * (tvCurrentPace), simply replace the
-         * collector above with:
+         * Later when i will add another TextView
+         * (tvCurrentPace)
          *
          * viewModel.formattedCurrentPace.collect {
          *      binding.tvCurrentPace.text = it
@@ -407,7 +421,7 @@ class RunActivity : AppCompatActivity() {
     private fun startServiceAndCountdown() {
 
         /*
-         * Start the foreground service FIRST,
+         * Starting the foreground service FIRST,
          * then bind to it.
          */
 

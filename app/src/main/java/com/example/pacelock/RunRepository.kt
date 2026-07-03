@@ -1,15 +1,12 @@
 package com.example.pacelock
 
 import android.content.Context
-import android.location.Location
 import com.example.pacelock.Data.Split
 import com.example.pacelock.RoomDB.GeoPointTypeConverter
 import com.example.pacelock.RoomDB.RunDatabase
 import com.example.pacelock.RoomDB.RunEntity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.withContext
 import org.osmdroid.util.GeoPoint
 
@@ -17,22 +14,6 @@ class RunRepository(context : Context) {
 
     val dao = RunDatabase.getInstance(context).dao()
 
-    val locationTracker = LocationTracker(context)
-
-    private val _locationFlow = MutableSharedFlow<GeoPoint>(replay = 0)
-    val locationFlow = _locationFlow.asSharedFlow()
-
-    fun startTracking(onLocation: (GeoPoint) -> Unit) {
-        locationTracker.startTracking { location: Location ->
-            val point = GeoPoint(location.latitude, location.longitude)
-            onLocation(point)
-        }
-    }
-
-
-    fun stopTracking() {
-        locationTracker.stopTracking()
-    }
 
     suspend fun saveRun(
         distanceMeters: Float,
@@ -72,7 +53,7 @@ class RunRepository(context : Context) {
         return dao.getRunById(id)
     }
 
-    fun getTotalDistance(): Flow<Float?>{
+    suspend fun getTotalDistance(): Float{
         return dao.getTotalDistance()
     }
 

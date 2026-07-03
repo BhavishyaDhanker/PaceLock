@@ -32,12 +32,18 @@ class CoachingEngine(private val config: CoachingConfig) {
 
         // Pace Alert
         if(config.targetPacePerSecPerKm > 0f && currentPacePerSecPerKm > 0f){
-            val tolerance = config.targetPacePerSecPerKm*config.paceToTolerancePercent
+            val lowerLimit =
+                config.targetPacePerSecPerKm -
+                        config.targetPaceToleranceSec
+
+            val upperLimit =
+                config.targetPacePerSecPerKm +
+                        config.targetPaceToleranceSec
 
             val violation = when{
-                currentPacePerSecPerKm > config.targetPacePerSecPerKm + tolerance -> ViolationType.TOO_SLOW
+                currentPacePerSecPerKm > upperLimit -> ViolationType.TOO_SLOW
 
-                currentPacePerSecPerKm < config.targetPacePerSecPerKm - tolerance -> ViolationType.TOO_FAST
+                currentPacePerSecPerKm < lowerLimit -> ViolationType.TOO_FAST
 
                 else-> ViolationType.NONE
             }
@@ -91,7 +97,7 @@ class CoachingEngine(private val config: CoachingConfig) {
 
 data class CoachingConfig(
     val targetPacePerSecPerKm: Float,
-    val paceToTolerancePercent: Float = 0.1f
+    val targetPaceToleranceSec: Float = 0.1f
 )
 
 data class CoachingCue(

@@ -214,6 +214,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="5.4"
+                                android:id="@+id/tvLastRunDistance"
                                 android:fontFamily="@font/space"
                                 android:textColor="@color/tertiary"
                                 android:layout_marginTop="15dp"
@@ -225,6 +226,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="KM"
+                                android:id="@+id/tvRunUnit"
                                 android:textColor="@color/faded_primary"
                                 android:textStyle="bold"
                                 android:layout_marginTop="15dp"
@@ -236,12 +238,12 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:orientation="vertical"
-                                android:layout_marginLeft="110dp">
+                                android:layout_marginLeft="100dp">
 
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="match_parent"
-
+                                    android:id="@+id/tvLastRunPace"
                                     android:text="4:45"
                                     android:textSize="55dp"
                                     android:textColor="@color/primary"/>

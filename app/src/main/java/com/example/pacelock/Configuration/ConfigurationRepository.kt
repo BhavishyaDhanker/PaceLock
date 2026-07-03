@@ -1,4 +1,4 @@
-package com.example.pacelock.Configration
+package com.example.pacelock.Configuration
 
 import android.content.Context
 import androidx.datastore.preferences.core.booleanPreferencesKey
@@ -22,6 +22,7 @@ class ConfigurationRepository(private val context: Context) {
         val KEY_BPM = intPreferencesKey("metronome_bpm")
         val KEY_METRONOME_SOUND = booleanPreferencesKey("metronome_sound")
         val KEY_TARGET_PACE = floatPreferencesKey("target_pace")
+        val KEY_TOLERANCE = floatPreferencesKey("pace_tolerance")
     }
 
 
@@ -32,7 +33,8 @@ class ConfigurationRepository(private val context: Context) {
             metronomeEnabled = it[KEY_METRONOME] ?: false,
             metronomeBpm = it[KEY_BPM] ?: 160,
             metronomeUseSound = it[KEY_METRONOME_SOUND] ?: true,
-            targetPacePerSecPerKm = it[KEY_TARGET_PACE] ?: 0f
+            targetPacePerSecPerKm = it[KEY_TARGET_PACE] ?: 270f,
+            targetPaceTolerance = it[KEY_TOLERANCE] ?: 3f
         )
 
     }
@@ -73,4 +75,9 @@ class ConfigurationRepository(private val context: Context) {
         }
     }
 
+    suspend fun updateTargetPaceTolerance(flag: Float){
+        context.dataStore.edit {
+            it[KEY_TOLERANCE] = flag
+        }
+    }
 }

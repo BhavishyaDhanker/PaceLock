@@ -6,8 +6,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import com.example.pacelock.Configration.ConfigurationFragment
-import com.example.pacelock.Data.RunResult
+import com.example.pacelock.Configuration.ConfigurationFragment
 import com.example.pacelock.Home.HomeFragment
 import com.example.pacelock.PastRuns.PastRunsFragment
 import com.example.pacelock.Stats.StatsFragment

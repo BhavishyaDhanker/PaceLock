@@ -258,6 +258,14 @@ class RunTrackingService : Service() {
 
         Log.d("RUN_SERVICE", "startTracking called")
 
+        if (isTracking) {
+            Log.d("RUN_SERVICE", "Ignoring duplicate ACTION_START")
+            return
+        }
+
+
+
+
         if (!helper.hasLocationPermission(this)) {
             onServiceError?.invoke("Location permission is required to track run.")
             stopSelf()
@@ -376,6 +384,10 @@ class RunTrackingService : Service() {
             // Coaching
             //----------------------------------------------------------
 
+            Log.d(
+                "COACHING",
+                "evaluate() called | pace=$currentPaceSecPerKm target=${currentSettings?.targetPacePerSecPerKm} distance=$totalDistanceMeters time=$elapsedSeconds"
+            )
             coachingEngine
                 ?.evaluate(
                     distanceMeters = totalDistanceMeters,
@@ -427,6 +439,7 @@ class RunTrackingService : Service() {
                 if (isPaused) continue
 
                 elapsedSeconds++
+                Log.d("RunService", "Time=$elapsedSeconds")
 
                 onTimerTick?.invoke(elapsedSeconds)
 
@@ -446,7 +459,11 @@ class RunTrackingService : Service() {
         val pendingIntent = PendingIntent.getActivity(
             this,
             0,
-            Intent(this, RunActivity::class.java),
+            Intent(this, RunActivity::class.java).apply {
+                putExtra("NEW_RUN", false)
+            }
+
+            ,
             PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
         )
 
