@@ -1,6 +1,7 @@
 package com.example.pacelock
 
 import android.content.Context
+import android.icu.util.Calendar
 import com.example.pacelock.Data.Split
 import com.example.pacelock.RoomDB.GeoPointTypeConverter
 import com.example.pacelock.RoomDB.RunDatabase
@@ -72,4 +73,23 @@ class RunRepository(context : Context) {
     fun getTotalRuns() {
         dao.getTotalRuns()
     }
+
+    private fun getWeekStartMillis(): Long {
+        val calendar = Calendar.getInstance()
+
+        calendar.firstDayOfWeek = Calendar.MONDAY
+        calendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY)
+        calendar.set(Calendar.HOUR_OF_DAY, 0)
+        calendar.set(Calendar.MINUTE, 0)
+        calendar.set(Calendar.SECOND, 0)
+        calendar.set(Calendar.MILLISECOND, 0)
+
+        return calendar.timeInMillis
+    }
+
+    suspend fun getWeeklyDistance() : Float{
+        return dao.getWeeklyDistance(getWeekStartMillis())
+    }
+
+
 }

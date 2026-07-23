@@ -7,7 +7,9 @@ import androidx.datastore.preferences.core.floatPreferencesKey
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.example.pacelock.Data.CoachingSettings
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 
 private val Context.dataStore by preferencesDataStore("coaching_settings")
 
@@ -23,6 +25,7 @@ class ConfigurationRepository(private val context: Context) {
         val KEY_METRONOME_SOUND = booleanPreferencesKey("metronome_sound")
         val KEY_TARGET_PACE = floatPreferencesKey("target_pace")
         val KEY_TOLERANCE = floatPreferencesKey("pace_tolerance")
+        val WEEKLY_TARGET = intPreferencesKey("weekly_target")
     }
 
 
@@ -34,10 +37,16 @@ class ConfigurationRepository(private val context: Context) {
             metronomeBpm = it[KEY_BPM] ?: 160,
             metronomeUseSound = it[KEY_METRONOME_SOUND] ?: true,
             targetPacePerSecPerKm = it[KEY_TARGET_PACE] ?: 270f,
-            targetPaceTolerance = it[KEY_TOLERANCE] ?: 3f
+            targetPaceTolerance = it[KEY_TOLERANCE] ?: 3f,
+            weeklyTarget = it[WEEKLY_TARGET] ?: 25
         )
 
     }
+
+    val weeklyTarget: Flow<Int> =
+        context.dataStore.data.map {
+            it[WEEKLY_TARGET] ?: 25
+        }
 
     suspend fun updateTTS(flag : Boolean){
         context.dataStore.edit {
@@ -78,6 +87,12 @@ class ConfigurationRepository(private val context: Context) {
     suspend fun updateTargetPaceTolerance(flag: Float){
         context.dataStore.edit {
             it[KEY_TOLERANCE] = flag
+        }
+    }
+
+    suspend fun updateWeeklyTarget(flag : Int){
+        context.dataStore.edit {
+            it[WEEKLY_TARGET] = flag
         }
     }
 }

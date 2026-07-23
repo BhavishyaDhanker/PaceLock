@@ -22,6 +22,7 @@ class CoachingEngine(private val config: CoachingConfig) {
         // Distance Milestones
         val kmCompleted = (distanceMeters/1000).toInt()
         if(kmCompleted > 0 && !announcedMilestones.contains(kmCompleted)){
+            announcedMilestones.add(kmCompleted)
             return CoachingCue(
                 "$kmCompleted kilometer${if(kmCompleted > 1)"s" else ""} completed. Keep it up!",
                 CuePriority.MEDIUM,

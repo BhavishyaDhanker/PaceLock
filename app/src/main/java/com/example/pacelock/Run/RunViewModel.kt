@@ -140,7 +140,7 @@ class RunViewModel(
             .stateIn(
                 viewModelScope,
                 SharingStarted.WhileSubscribed(5000),
-                "--:-- /km"
+                "--:--"
             )
 
     /**

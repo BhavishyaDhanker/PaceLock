@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.pacelock.Configuration.ConfigurationRepository
 import com.example.pacelock.Data.RunResult
 import com.example.pacelock.RoomDB.RunEntity
 import com.example.pacelock.RunRepository
@@ -17,6 +18,7 @@ import java.util.Locale
 class HomeViewModel(application: Application) : AndroidViewModel(application) {
 
     private val repo = RunRepository(application)
+    private val configRepo = ConfigurationRepository(application)
 
     private val _navigate = MutableSharedFlow<Unit>()
     val navigate = _navigate.asSharedFlow()
@@ -26,6 +28,23 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     val lastRunDistance = _lastRunDistance.asStateFlow()
     private val _lastRunPace = MutableStateFlow<String?>(null)
     val lastRunPace = _lastRunPace.asStateFlow()
+    private val _weeklyDistance = MutableStateFlow<Float?>(null)
+    val weeklyDistance = _weeklyDistance.asStateFlow()
+    private var _weeklyTarget = MutableStateFlow<Int?>(null)
+    val weeklyTarget = _weeklyTarget.asStateFlow()
+    private val _progress = MutableStateFlow(0)
+    val progress = _progress.asStateFlow()
+
+
+    init {
+        viewModelScope.launch {
+            configRepo.weeklyTarget.collect {
+                _weeklyTarget.value = it.toInt()
+            }
+        }
+    }
+
+    
     fun onStartRaceBtnClick(){                  // we used sharedFlow and unit because navigation is a one time
         viewModelScope.launch {                 // activity and this method is much cleaner than stateflow for one
             _navigate.emit(Unit)        //  time use cases
@@ -49,7 +68,13 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         )
     }
 
-    fun loadWeaklyDistance() {
+    suspend fun loadWeaklyDistance(){
+        val weeklyDistanceMeters = repo.getWeeklyDistance()
+
+        _weeklyDistance.value = weeklyDistanceMeters/1000f
     }
+
+
+
 
 }

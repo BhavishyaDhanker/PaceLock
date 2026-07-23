@@ -45,6 +45,7 @@ class HomeFragment : Fragment() {
         setupViews()
         setupListeners()
         observeStates()
+
     }
 
     private fun setupViews() {
@@ -99,6 +100,22 @@ class HomeFragment : Fragment() {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.lastRunPace.collect {
                     binding.tvLastRunPace.text = it
+                }
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED){
+                viewModel.weeklyDistance.collect {
+                    binding.tvWeeklyDistance.text = it.toString()
+                }
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED){
+                viewModel.progress.collect {
+
                 }
             }
         }

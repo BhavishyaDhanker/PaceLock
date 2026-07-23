@@ -17,17 +17,25 @@ object RunStatsCalculator {
         val newest = window.last()
         val oldest = window.first()
 
+        var distanceMeters = 0f
         val results = FloatArray(1)
 
-        Location.distanceBetween(
-            oldest.point.latitude,
-            oldest.point.longitude,
-            newest.point.latitude,
-            newest.point.longitude,
-            results
-        )
+        for (i in 1 until window.size) {
 
-        val distanceMeters = results[0]
+            val previous = window[i - 1]
+            val current = window[i]
+
+            Location.distanceBetween(
+                previous.point.latitude,
+                previous.point.longitude,
+                current.point.latitude,
+                current.point.longitude,
+                results
+            )
+
+            distanceMeters += results[0]
+        }
+
         val elapsedSeconds = (newest.timestamp - oldest.timestamp)/1000L
 
         if(elapsedSeconds <= 0f || distanceMeters <= 0f){
@@ -35,7 +43,8 @@ object RunStatsCalculator {
         }
 
         val currentPace = elapsedSeconds/(distanceMeters/1000f)
-        if(currentPace < MIN_MOVING_SPEED_MS){
+        val speed = distanceMeters / elapsedSeconds
+        if(speed < MIN_MOVING_SPEED_MS){
             return 0f
         }
 

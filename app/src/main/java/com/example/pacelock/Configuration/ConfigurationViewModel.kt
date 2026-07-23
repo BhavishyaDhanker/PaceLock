@@ -59,4 +59,10 @@ class ConfigurationViewModel(application: Application) : AndroidViewModel(applic
         }
     }
 
+    fun updateWeeklyTarget(target: Int) {
+        viewModelScope.launch {
+            repo.updateWeeklyTarget(target)
+        }
+    }
+
 }

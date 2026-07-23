@@ -7,5 +7,6 @@ data class CoachingSettings(
     val metronomeBpm : Int = 160,
     val metronomeUseSound : Boolean = false,
     val targetPacePerSecPerKm : Float = 270f,
-    val targetPaceTolerance : Float = 3f
+    val targetPaceTolerance : Float = 3f,
+    val weeklyTarget : Int = 25
 )

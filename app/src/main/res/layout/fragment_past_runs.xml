@@ -11,45 +11,6 @@
         android:layout_height="match_parent"
         android:background="#111111">
 
-        <!--================ Toolbar =================-->
-
-        <LinearLayout
-            android:id="@+id/topBar"
-            android:layout_width="0dp"
-            android:layout_height="70dp"
-            android:gravity="center_vertical"
-            android:paddingHorizontal="20dp"
-            android:orientation="horizontal"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
-
-            <ImageView
-                android:layout_width="22dp"
-                android:layout_height="22dp"
-                android:src="@drawable/ic_speedometer"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="PACELOCK"
-                android:textStyle="italic|bold"
-                android:textColor="#C7FF00"
-                android:textSize="24sp"
-                android:layout_marginStart="10dp"/>
-
-            <Space
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_weight="1"/>
-
-            <ImageView
-                android:layout_width="28dp"
-                android:layout_height="28dp"
-                android:src="@drawable/ic_person"/>
-        </LinearLayout>
-
-
         <!--================ Header =================-->
 
         <TextView
@@ -62,7 +23,7 @@
             android:textSize="14sp"
             android:layout_marginStart="20dp"
             android:layout_marginTop="18dp"
-            app:layout_constraintTop_toBottomOf="@id/topBar"
+            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"/>
 
         <TextView
@@ -82,7 +43,8 @@
             android:orientation="vertical"
             android:gravity="end"
             android:layout_marginEnd="20dp"
-            app:layout_constraintTop_toBottomOf="@id/topBar"
+            android:layout_marginTop="18dp"
+            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
 
             <TextView

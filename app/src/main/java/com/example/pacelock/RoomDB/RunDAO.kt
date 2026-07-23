@@ -34,6 +34,13 @@ interface RunDAO {
     @Query("SELECT SUM(distance) FROM runs")
     suspend fun getTotalDistance(): Float
 
+    @Query("""
+    SELECT COALESCE(SUM(distance), 0)
+    FROM runs
+    WHERE timestamp >= :weekStartMillis
+""")
+    suspend fun getWeeklyDistance(weekStartMillis: Long): Float
+
     @Query("SELECT COUNT(*) FROM runs")
     fun getTotalRuns(): Flow<Int>
 

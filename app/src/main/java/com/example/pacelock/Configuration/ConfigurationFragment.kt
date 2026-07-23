@@ -93,6 +93,15 @@ class ConfigurationFragment : Fragment(R.layout.fragment_configuration) {
 
                 binding.tvTolerance.text =
                     "±${settings.targetPaceTolerance.toInt()} seconds"
+
+
+                // Weekly Target
+                binding.sliderWeeklyTarget.addOnChangeListener { _, value, _ ->
+
+                    binding.tvWeeklyTarget.text = value.toInt().toString()
+
+                    viewModel.updateWeeklyTarget(value.toInt())
+                }
             }
         }
     }

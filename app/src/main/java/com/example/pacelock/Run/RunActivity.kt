@@ -179,7 +179,7 @@ class RunActivity : AppCompatActivity() {
 
             viewModel.isPause.collect {
 
-                binding.pauseRun.text =
+                binding.tvPauseRun.text =
                     if (it) "RESUME RUN"
                     else "PAUSE RUN"
             }
@@ -216,14 +216,13 @@ class RunActivity : AppCompatActivity() {
             }
         }
 
-        /*
-         * Later when i will add another TextView
-         * (tvCurrentPace)
-         *
-         * viewModel.formattedCurrentPace.collect {
-         *      binding.tvCurrentPace.text = it
-         * }
-         */
+        lifecycleScope.launch {
+
+            viewModel.formattedCurrentPace.collect {
+
+                binding.tvCurrentPace.text = it
+            }
+        }
 
         lifecycleScope.launch {
 

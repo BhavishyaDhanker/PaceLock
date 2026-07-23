@@ -4,11 +4,53 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
+    android:fitsSystemWindows="true"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@color/neutral"
     tools:context=".HomeActivity">
+
+    <LinearLayout
+    android:id="@+id/topBar"
+    android:layout_width="match_parent"
+    android:layout_height="70dp"
+    android:gravity="center_vertical"
+    android:paddingHorizontal="20dp"
+    android:orientation="horizontal"
+    app:layout_constraintTop_toTopOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintEnd_toEndOf="parent">
+
+    <ImageView
+        android:layout_width="22dp"
+        android:layout_height="22dp"
+        android:src="@drawable/ic_speedometer"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="PACELOCK"
+        android:textStyle="italic|bold"
+        android:textColor="#C7FF00"
+        android:textSize="32sp"
+        android:layout_marginStart="10dp"/>
+
+    <Space
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
+
+    <ImageView
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        android:src="@drawable/ic_person"/>
+   </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="#5C5C5C"/>
 
     <FrameLayout
         android:layout_width="match_parent"
