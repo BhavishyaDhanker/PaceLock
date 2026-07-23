@@ -52,7 +52,7 @@ class HomeFragment : Fragment() {
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.loadLatestRun()
-            viewModel.loadWeaklyDistance()
+            viewModel.loadWeeklyDistance()
         }
     }
 
@@ -107,15 +107,16 @@ class HomeFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED){
                 viewModel.weeklyDistance.collect {
-                    binding.tvWeeklyDistance.text = it.toString()
+                    binding.tvWeeklyDistance.text =
+                        String.format(Locale.getDefault(), "%.1f", it)
                 }
             }
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED){
-                viewModel.progress.collect {
-
+                viewModel.progress.collect { progress ->
+                    binding.weeklyDistanceProgress.progress = progress
                 }
             }
         }

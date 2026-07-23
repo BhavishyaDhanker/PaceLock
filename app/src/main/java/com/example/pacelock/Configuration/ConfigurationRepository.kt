@@ -8,6 +8,8 @@ import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.example.pacelock.Data.CoachingSettings
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 
@@ -43,11 +45,10 @@ class ConfigurationRepository(private val context: Context) {
 
     }
 
-    val weeklyTarget: Flow<Int> =
+    val weeklyTarget:  Flow<Int> =
         context.dataStore.data.map {
             it[WEEKLY_TARGET] ?: 25
         }
-
     suspend fun updateTTS(flag : Boolean){
         context.dataStore.edit {
             it[KEY_TTS] = flag

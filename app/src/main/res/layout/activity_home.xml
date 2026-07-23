@@ -63,7 +63,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/bottomNav"
-        app:menu="@menu/bottom_nav"/>
+        app:menu="@menu/bottom_nav"
+        android:background="#111111"
+        app:itemIconTint="@color/bottom_nav_colors"
+        app:itemTextColor="@color/bottom_nav_colors"
+        app:itemActiveIndicatorStyle="@null"
+        />
 
 
 

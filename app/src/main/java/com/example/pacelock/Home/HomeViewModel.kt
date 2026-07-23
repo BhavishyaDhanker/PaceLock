@@ -38,8 +38,9 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
 
     init {
         viewModelScope.launch {
-            configRepo.weeklyTarget.collect {
-                _weeklyTarget.value = it.toInt()
+            configRepo.weeklyTarget.collect { target ->
+                _weeklyTarget.value = target
+                updateProgress()
             }
         }
     }
@@ -68,13 +69,25 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         )
     }
 
-    suspend fun loadWeaklyDistance(){
+    suspend fun loadWeeklyDistance(){
         val weeklyDistanceMeters = repo.getWeeklyDistance()
 
         _weeklyDistance.value = weeklyDistanceMeters/1000f
+
+        updateProgress()
     }
 
 
+    private fun updateProgress() {
+
+        val distance = _weeklyDistance.value ?: return
+        val target = _weeklyTarget.value ?: return
+
+        _progress.value =
+            ((distance / target) * 100f)
+                .coerceIn(0f, 100f)
+                .toInt()
+    }
 
 
 }
