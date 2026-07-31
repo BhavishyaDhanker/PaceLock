@@ -8,11 +8,13 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.pacelock.Data.RunView
 import com.example.pacelock.R
+import com.example.pacelock.RoomDB.RunEntity
 import java.time.format.TextStyle
 import java.util.Locale
 
 class PastRunsAdapter(
-    private var runList : List<RunView>
+    private var runList : List<RunView>,
+    private val onRunClicked: (Long) -> Unit
 ) : RecyclerView.Adapter<PastRunsAdapter.PastRunsViewHolder>() {
 
 
@@ -97,6 +99,12 @@ class PastRunsAdapter(
                 distance / 1000f
         )
         holder.pace.text = if((distance < 10f )|| (duration < 10)) "--:--" else formattedPace
+
+
+        holder.itemView.setOnClickListener {
+            onRunClicked(run.id)
+        }
+
     }
 
     override fun getItemCount(): Int {

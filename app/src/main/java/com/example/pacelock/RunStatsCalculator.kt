@@ -73,15 +73,15 @@ object RunStatsCalculator {
 
     fun formatDistance( meters: Float) : String{
         return if (meters < 1000f){
-            "${meters.toInt()} m"
+            "${meters.toInt()}"
         }else{
-            String.format(Locale.getDefault(),"%.2f km", meters/ 1000f)
+            String.format(Locale.getDefault(),"%.2f ", meters/ 1000f)
         }
     }
 
     fun calculatePace( distanceMeters: Float, secondsElapsed: Long) : String{
         if(distanceMeters < 10f){
-            return "--:-- min/km"
+            return "--:--"
         }
 
         val distanceKm = distanceMeters /1000f
@@ -116,14 +116,12 @@ object RunStatsCalculator {
     }
 
     fun formatTime( secondsElapsed: Long): String{
-        val hrsElapsed = secondsElapsed/3600L.toInt()
-        val minElapsed = (secondsElapsed - hrsElapsed*3600L)/60L.toInt()
-        val secElapsed = (secondsElapsed - minElapsed*60L - hrsElapsed*3600L).toInt()
+        val minElapsed = (secondsElapsed)/60L.toInt()
+        val secElapsed = (secondsElapsed - minElapsed*60L).toInt()
 
         return String.format(
             Locale.getDefault(),
-            "%02d:%02d:%02d",
-            hrsElapsed,
+            "%02d:%02d",
             minElapsed,
             secElapsed
         )

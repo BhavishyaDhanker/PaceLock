@@ -8,5 +8,6 @@ import kotlinx.android.parcel.Parcelize
 data class Split(
     val kilometerNo: Int,
     val seconds: Long,
+    val distanceMeters: Float,
     val cumulativeSeconds: Long
 ) : Parcelable

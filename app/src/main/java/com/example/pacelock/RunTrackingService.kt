@@ -357,6 +357,7 @@ class RunTrackingService : Service() {
                 val split = Split(
                      lastSplitNumber,
                     elapsedSeconds - lastSplitTime,
+                    1000f,
                     elapsedSeconds
                 )
 
@@ -525,6 +526,23 @@ class RunTrackingService : Service() {
     }
 
     private fun finishTracking() {
+
+        val remainingDistance =
+            totalDistanceMeters - lastSplitDistance
+
+        if (remainingDistance > 0f) {
+
+            splits.add(
+                Split(
+                    lastSplitNumber + 1,
+                    elapsedSeconds - lastSplitTime,
+                    remainingDistance,
+                    elapsedSeconds
+                )
+            )
+
+            onSplitTrack?.invoke(splits.toList())
+        }
 
         isTracking = false
         isPaused = false

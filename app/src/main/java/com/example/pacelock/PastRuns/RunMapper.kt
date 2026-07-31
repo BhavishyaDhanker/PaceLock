@@ -8,7 +8,8 @@ import com.example.pacelock.RoomDB.RunEntity
         return RunView(
             timestamp = timestamp,
             distanceMeters = distance,
-            durationSeconds = elapsed.toInt()
+            durationSeconds = elapsed.toInt(),
+            id = id
         )
     }
 

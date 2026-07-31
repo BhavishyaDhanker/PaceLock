@@ -51,9 +51,13 @@ class SplitsAdapter(
             paceMinutes, paceSeconds
         )
 
+        val formattedDistance = if(split.distanceMeters >= 1000f) {split.distanceMeters/1000f}
+            else {split.distanceMeters}
+
         holder.number.text = split.kilometerNo.toString()
         holder.time.text = formattedTime
         holder.pace.text = formattedPace
+        holder.distance.text = formattedDistance.toString()
 
 
 

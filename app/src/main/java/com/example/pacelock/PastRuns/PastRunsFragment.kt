@@ -13,6 +13,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.pacelock.PastRuns.PastRunsViewModel
 import com.example.pacelock.R
+import com.example.pacelock.Stats.StatsFragment
 import com.example.pacelock.databinding.FragmentPastRunsBinding
 import kotlinx.coroutines.launch
 import java.util.Locale
@@ -59,7 +60,16 @@ class PastRunsFragment : Fragment() {
     private fun setupViews() {
 
         // setting up recyclerView
-        myRunsAdapter = PastRunsAdapter(emptyList())
+        myRunsAdapter = PastRunsAdapter(emptyList()){ runId ->
+
+            parentFragmentManager.beginTransaction()
+                .replace(
+                    R.id.frame,
+                    StatsFragment.newInstance(runId)
+                )
+                .addToBackStack(null)
+                .commit()
+        }
 
         binding.historyRecycler.layoutManager = LinearLayoutManager(requireContext())
         binding.historyRecycler.adapter = myRunsAdapter

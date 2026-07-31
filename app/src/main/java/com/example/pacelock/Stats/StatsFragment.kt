@@ -159,10 +159,23 @@ class StatsFragment : Fragment() {
         result: RunResult
     ) {
 
-        binding.tvDistance.text =
-            calculator.formatDistance(
-                result.distanceMeters
-            )
+        if (result.distanceMeters < 1000f) {
+
+            binding.tvDistance.text =
+                String.format("%.0f", result.distanceMeters)
+
+            binding.tvDistanceUnit.text = "m"
+
+        } else {
+
+            binding.tvDistance.text =
+                String.format("%.2f", result.distanceMeters / 1000f)
+
+            binding.tvDistanceUnit.text = "km"
+        }
+
+
+
 
         binding.tvTime.text =
             calculator.formatTime(
