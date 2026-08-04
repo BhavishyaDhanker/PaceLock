@@ -44,6 +44,7 @@
     <ImageView
         android:layout_width="28dp"
         android:layout_height="28dp"
+        android:id="@+id/imgProfile"
         android:src="@drawable/ic_person"/>
    </LinearLayout>
 

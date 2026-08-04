@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "307510348630",
+    "project_id": "project1-c7227",
+    "storage_bucket": "project1-c7227.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:307510348630:android:357505060e99eed4a824f7",
+        "android_client_info": {
+          "package_name": "com.example.pacelock"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAn5iEHw9_XgucXNI84p24jz7bt38rmzTA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

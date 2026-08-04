@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#0A0B0D"
+    tools:context=".SignUpActivity">
+
+    <!-- Brand Header -->
+
+
+    <TextView
+    android:id="@+id/tvBrandName"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="PaceLock"
+    android:textColor="#CCFF00"
+    android:textSize="42sp"
+        android:paddingTop="16dp"
+    android:paddingStart="25dp"
+    android:textStyle="italic|bold"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- ScrollView constrained below Brand Name -->
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvBrandName">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="20dp">
+
+            <!-- Main Registration Card -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardSignup"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:cardBackgroundColor="#121417"
+                app:cardCornerRadius="14dp"
+                app:cardElevation="10dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/secondaryConstraint"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="24dp">
+
+                    <!-- Main Header Title -->
+                    <TextView
+                        android:id="@+id/tvHeaderTitle"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:letterSpacing="0.03"
+                        android:text="JOIN THE ELITE"
+                        android:textColor="#FFFFFF"
+                        android:textSize="24sp"
+                        android:textStyle="bold"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <!-- Subtitle Description -->
+                    <TextView
+                        android:id="@+id/tvSubtitle"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:text="Sync your performance with industrial-grade encryption."
+                        android:textColor="#A0A5AD"
+                        android:textSize="13sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/tvHeaderTitle" />
+
+                    <!-- Row 1: Athlete Name & Pace Goal Labels -->
+                    <TextView
+                        android:id="@+id/lblAthleteName"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="24dp"
+                        android:layout_marginEnd="8dp"
+                        android:letterSpacing="0.08"
+                        android:text="ATHLETE NAME"
+                        android:textColor="#00D2FF"
+                        android:textSize="11sp"
+                        android:textStyle="bold"
+                        app:layout_constraintEnd_toStartOf="@id/lblPaceGoal"
+                        app:layout_constraintHorizontal_weight="1"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/tvSubtitle" />
+
+                    <TextView
+                        android:id="@+id/lblPaceGoal"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:letterSpacing="0.08"
+                        android:text="PACE GOAL (MIN/KM)"
+                        android:textColor="#00D2FF"
+                        android:textSize="11sp"
+                        android:textStyle="bold"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_weight="1"
+                        app:layout_constraintStart_toEndOf="@id/lblAthleteName"
+                        app:layout_constraintTop_toTopOf="@id/lblAthleteName" />
+
+                    <!-- Row 1: Athlete Name Input -->
+                    <EditText
+                        android:id="@+id/etAthleteName"
+                        android:layout_width="0dp"
+                        android:layout_height="48dp"
+                        android:layout_marginTop="6dp"
+                        android:layout_marginEnd="8dp"
+                        android:background="#181A1F"
+                        android:drawableEnd="@android:drawable/ic_menu_myplaces"
+                        android:drawablePadding="8dp"
+                        android:drawableTint="#6E7582"
+                        android:hint="John Doe"
+                        android:inputType="textPersonName"
+                        android:paddingHorizontal="14dp"
+                        android:textColor="#FFFFFF"
+                        android:textColorHint="#4A505A"
+                        android:textSize="13sp"
+                        app:layout_constraintEnd_toStartOf="@id/etPaceGoal"
+                        app:layout_constraintHorizontal_weight="1"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/lblAthleteName" />
+
+                    <!-- Row 1: Pace Goal Input -->
+                    <EditText
+                        android:id="@+id/etPaceGoal"
+                        android:layout_width="0dp"
+                        android:layout_height="48dp"
+                        android:layout_marginStart="8dp"
+                        android:background="#181A1F"
+                        android:drawableEnd="@android:drawable/ic_menu_recent_history"
+                        android:drawablePadding="8dp"
+                        android:drawableTint="#6E7582"
+                        android:hint="04:20"
+                        android:inputType="time"
+                        android:paddingHorizontal="14dp"
+                        android:textColor="#FFFFFF"
+                        android:textColorHint="#4A505A"
+                        android:textSize="13sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_weight="1"
+                        app:layout_constraintStart_toEndOf="@id/etAthleteName"
+                        app:layout_constraintTop_toTopOf="@id/etAthleteName" />
+
+                    <!-- Row 2: Communication Uplink Label -->
+                    <TextView
+                        android:id="@+id/lblCommunication"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="18dp"
+                        android:letterSpacing="0.08"
+                        android:text="COMMUNICATION UPLINK"
+                        android:textColor="#00D2FF"
+                        android:textSize="11sp"
+                        android:textStyle="bold"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/etAthleteName" />
+
+                    <!-- Row 2: Communication Uplink Input -->
+                    <EditText
+                        android:id="@+id/etCommunication"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:layout_marginTop="6dp"
+                        android:background="#181A1F"
+                        android:drawableEnd="@android:drawable/ic_dialog_email"
+                        android:drawablePadding="8dp"
+                        android:drawableTint="#6E7582"
+                        android:hint="athlete@pacelock.io"
+                        android:inputType="textEmailAddress"
+                        android:paddingHorizontal="14dp"
+                        android:textColor="#FFFFFF"
+                        android:textColorHint="#4A505A"
+                        android:textSize="13sp"
+                        app:layout_constraintTop_toBottomOf="@id/lblCommunication" />
+
+                    <!-- Row 3: Access Cipher Label -->
+                    <TextView
+                        android:id="@+id/lblCipher"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="18dp"
+                        android:letterSpacing="0.08"
+                        android:text="ACCESS CIPHER"
+                        android:textColor="#00D2FF"
+                        android:textSize="11sp"
+                        android:textStyle="bold"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/etCommunication" />
+
+                    <!-- Row 3: Access Cipher Input -->
+                    <EditText
+                        android:id="@+id/etCipher"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:layout_marginTop="6dp"
+                        android:background="#181A1F"
+                        android:drawableEnd="@android:drawable/ic_lock_lock"
+                        android:drawablePadding="8dp"
+                        android:drawableTint="#6E7582"
+                        android:hint="••••••••••••"
+                        android:inputType="textPassword"
+                        android:paddingHorizontal="14dp"
+                        android:textColor="#FFFFFF"
+                        android:textColorHint="#4A505A"
+                        android:textSize="13sp"
+                        app:layout_constraintTop_toBottomOf="@id/lblCipher" />
+
+                    <!-- Primary Action Button -->
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/btnInitializeSession"
+                        android:layout_width="match_parent"
+                        android:layout_height="52dp"
+                        android:layout_marginTop="24dp"
+                        android:background="#CCFF00"
+                        android:text="INITIALIZE SESSION &#x26A1;"
+                        android:textColor="#000000"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        app:layout_constraintTop_toBottomOf="@id/etCipher" />
+
+                    <!-- Bottom Navigation Link -->
+                    <TextView
+                        android:id="@+id/tvLoginLink"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:text="Already an elite member? Login to HUD"
+                        android:textColor="#A0A5AD"
+                        android:textSize="13sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/btnInitializeSession" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </androidx.cardview.widget.CardView>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

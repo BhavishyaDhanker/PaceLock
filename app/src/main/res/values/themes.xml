@@ -1,9 +1,18 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Base.Theme.PaceLock" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
-    </style>
+<resources>
+<!-- Base application theme. -->
+<style name="Base.Theme.PaceLock" parent="Theme.Material3.DayNight.NoActionBar">
 
-    <style name="Theme.PaceLock" parent="Base.Theme.PaceLock" />
+</style>
+
+<style name="Theme.PaceLock" parent="Base.Theme.PaceLock" />
+
+<!-- Splash Screen Theme -->
+<style name="Theme.App.Starting" parent="Theme.SplashScreen">
+    <!-- Set the splash screen background, matching your dark UI -->
+    <item name="windowSplashScreenBackground">#0A0B0D</item>
+    <!-- Use your app icon here -->
+    <item name="windowSplashScreenAnimatedIcon">@drawable/logo</item>
+    <!-- Route to your standard theme after the splash -->
+    <item name="postSplashScreenTheme">@style/Base.Theme.PaceLock</item>
+</style>
 </resources>

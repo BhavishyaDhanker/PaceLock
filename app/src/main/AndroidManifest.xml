@@ -12,30 +12,52 @@
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <application
+        android:name=".MyAap"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@drawable/logo"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:name=".MyAap"
         android:theme="@style/Theme.PaceLock">
         <activity
             android:name=".Run.RunActivity"
             android:exported="false" />
+
         <service
-            android:name="RunTrackingService"
-            android:foregroundServiceType="location"
-            android:exported="false" />
+            android:name=".RunTrackingService"
+            android:exported="false"
+            android:foregroundServiceType="location" />
+
         <activity
-            android:name=".HomeActivity"
-            android:exported="true">
+            android:name=".com.example.pacelock.SplashActivity"
+            android:exported="true"
+            android:theme="@style/Theme.App.Starting"> <!-- Apply Splash Theme Here -->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".HomeActivity"
+            android:exported="false" />
+        <activity
+            android:name=".LoginActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".SignUpActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".Profile.ProfileActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".Profile.EditProfileActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
     </application>
 
 </manifest>

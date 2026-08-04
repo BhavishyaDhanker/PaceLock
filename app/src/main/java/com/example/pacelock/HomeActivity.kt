@@ -9,6 +9,7 @@ import androidx.lifecycle.lifecycleScope
 import com.example.pacelock.Configuration.ConfigurationFragment
 import com.example.pacelock.Home.HomeFragment
 import com.example.pacelock.PastRuns.PastRunsFragment
+import com.example.pacelock.Profile.ProfileActivity
 import com.example.pacelock.Stats.StatsFragment
 import com.example.pacelock.databinding.ActivityHomeBinding
 import kotlinx.coroutines.launch
@@ -69,12 +70,24 @@ class HomeActivity : AppCompatActivity() {
                 }
             }
         }
+
+        lifecycleScope.launch {
+            viewModel.profileBtnClicked.collect {
+                if(it){
+                    val intent = Intent(this@HomeActivity, ProfileActivity::class.java)
+                    startActivity(intent)
+                }
+            }
+        }
     }
 
     private fun setupListeners() {
         binding.bottomNav.setOnItemSelectedListener {
             viewModel.changeTab(it.itemId)
             true
+        }
+            binding.imgProfile.setOnClickListener {
+                viewModel.profileIntent()
         }
     }
 

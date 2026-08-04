@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#0A0B0D"
+    android:padding="24dp"
+    tools:context=".LoginActivity">
+
+
+        <!-- Brand Header (Top Left) -->
+        <TextView
+            android:id="@+id/tvBrandName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="PaceLock"
+            android:textColor="#CCFF00"
+            android:textSize="42sp"
+            android:paddingStart="25dp"
+            android:textStyle="italic|bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+
+        <!-- Main Card Container -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardLogin"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            app:cardBackgroundColor="#121417"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="8dp"
+            app:layout_constraintBottom_toBottomOf="@id/main"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:paddingVertical="20dp"
+            app:layout_constraintTop_toBottomOf="@id/tvBrandName">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="28dp">
+
+                <!-- Subtitle -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:letterSpacing="0.15"
+                    android:text="SYSTEM ACCESS REQUIRED"
+                    android:textColor="#00D2FF"
+                    android:textSize="11sp"
+                    android:textStyle="bold" />
+
+                <!-- Main Title -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="6dp"
+                    android:letterSpacing="0.05"
+                    android:text="LOCKED IN"
+                    android:textColor="#FFFFFF"
+                    android:textSize="28sp"
+                    android:textStyle="bold" />
+
+                <!-- Athlete ID Label -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="32dp"
+                    android:letterSpacing="0.1"
+                    android:text="ATHLETE ID / EMAIL"
+                    android:textColor="#A0A5AD"
+                    android:textSize="11sp"
+                    android:textStyle="bold" />
+
+                <!-- Email Input -->
+                <EditText
+                    android:id="@+id/etEmail"
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:layout_marginTop="8dp"
+                    android:background="#181A1F"
+                    android:drawableStart="@android:drawable/ic_menu_myplaces"
+                    android:drawablePadding="12dp"
+                    android:drawableTint="#6E7582"
+                    android:hint="athlete@pacelock.com"
+                    android:inputType="textEmailAddress"
+                    android:paddingHorizontal="16dp"
+                    android:textColor="#FFFFFF"
+                    android:textColorHint="#4A505A"
+                    android:textSize="14sp" />
+
+                <!-- Access Key Label & Forgot Link -->
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:letterSpacing="0.1"
+                        android:text="ACCESS KEY"
+                        android:textColor="#A0A5AD"
+                        android:textSize="11sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tvForgot"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:letterSpacing="0.1"
+                        android:text="FORGOT?"
+                        android:textColor="#A0A5AD"
+                        android:textSize="11sp"
+                        android:textStyle="bold" />
+                </RelativeLayout>
+
+                <!-- Password Input -->
+                <EditText
+                    android:id="@+id/etPassword"
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:layout_marginTop="8dp"
+                    android:background="#181A1F"
+                    android:drawableStart="@android:drawable/ic_lock_lock"
+                    android:drawablePadding="12dp"
+                    android:drawableTint="#6E7582"
+                    android:hint="••••••••"
+                    android:inputType="textPassword"
+                    android:paddingHorizontal="16dp"
+                    android:textColor="#FFFFFF"
+                    android:textColorHint="#4A505A"
+                    android:textSize="14sp" />
+
+                <!-- Submit Button -->
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btnInitialize"
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:layout_marginTop="28dp"
+                    android:background="#CCFF00"
+                    android:text="INITIALIZE SESSION ⚡"
+                    android:textColor="#000000"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+                <!-- Sign Up Text -->
+                <TextView
+                    android:id="@+id/tvSignUp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="24dp"
+                    android:text="Don't have an elite account? SIGN UP"
+                    android:textColor="#A0A5AD"
+                    android:textSize="12sp" />
+
+                <!-- Security Footer inside Card -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="20dp"
+                    android:letterSpacing="0.1"
+                    android:text="— SECURED BY PACELOCK KERNEL —"
+                    android:textColor="#4A505A"
+                    android:textSize="9sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
