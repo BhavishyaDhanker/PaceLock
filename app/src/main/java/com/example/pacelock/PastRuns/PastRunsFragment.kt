@@ -103,5 +103,14 @@ class PastRunsFragment : Fragment() {
     }
 
     private fun setupListeners() {
+            binding.chipGroupFilter.setOnCheckedStateChangeListener { group, checkedIds ->
+                if (checkedIds.isEmpty()) return@setOnCheckedStateChangeListener
+
+                when (checkedIds.first()) {
+                    R.id.chipAllTime -> viewModel.setFilter(RunFilter.ALL_TIME)
+                    R.id.chipThisWeek -> viewModel.setFilter(RunFilter.THIS_WEEK)
+                    R.id.chipLastWeek -> viewModel.setFilter(RunFilter.LAST_WEEK)
+                }
+            }
+        }
     }
-}
