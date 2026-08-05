@@ -11,6 +11,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.pacelock.Data.RunResult
+import com.example.pacelock.R
 import com.example.pacelock.RoomDB.GeoPointTypeConverter
 import com.example.pacelock.RoomDB.RunEntity
 import com.example.pacelock.RunStatsCalculator
@@ -19,6 +20,12 @@ import kotlinx.coroutines.launch
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory.MAPNIK
 import org.osmdroid.util.BoundingBox.fromGeoPoints
 import org.osmdroid.views.overlay.Polyline
+import com.github.mikephil.charting.charts.BarChart
+import com.github.mikephil.charting.components.XAxis
+import com.github.mikephil.charting.data.BarData
+import com.github.mikephil.charting.data.BarDataSet
+import com.github.mikephil.charting.formatter.ValueFormatter
+import com.google.android.material.tabs.TabLayout
 
 class StatsFragment : Fragment() {
 
@@ -26,11 +33,14 @@ class StatsFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val viewModel: StatsViewModel by viewModels()
-    private lateinit var runResult : RunResult
+    private lateinit var runResult: RunResult
     private lateinit var mySplitsAdapter: SplitsAdapter
+    private lateinit var barChart: BarChart
+    private lateinit var tabLayout: TabLayout
 
     private val converter = GeoPointTypeConverter()
     private val calculator = RunStatsCalculator
+    private var currentRuns: List<RunEntity> = emptyList()
 
     companion object {
 
@@ -66,9 +76,84 @@ class StatsFragment : Fragment() {
     ) {
         super.onViewCreated(view, savedInstanceState)
 
+        barChart = view.findViewById(R.id.statsBarChart)
+        tabLayout = view.findViewById(R.id.timeframeTabLayout)
+
+        setupChart()
+
+        // Observe Room Database for all runs
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.allRuns.collect { runs ->
+                currentRuns = runs
+                // Refresh chart data immediately when database updates
+                loadDataForTimeframe(tabLayout.selectedTabPosition)
+            }
+        }
+
+        tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab?) {
+                tab?.position?.let { loadDataForTimeframe(it) }
+            }
+
+            override fun onTabUnselected(tab: TabLayout.Tab?) {}
+            override fun onTabReselected(tab: TabLayout.Tab?) {}
+        })
+
         setupRecyclerView()
         loadRun()
+    }
 
+    private fun setupChart() {
+        barChart.apply {
+            description.isEnabled = false
+            legend.isEnabled = false
+            setDrawGridBackground(false)
+            setDrawBorders(false)
+
+            xAxis.apply {
+                textColor = Color.parseColor("#888888")
+                setDrawGridLines(false)
+                position = XAxis.XAxisPosition.BOTTOM
+                granularity = 1f // Ensure one label per bar
+            }
+
+            axisLeft.apply {
+                textColor = Color.parseColor("#888888")
+                setDrawGridLines(true)
+                gridColor = Color.parseColor("#333333")
+                axisMinimum = 0f // Start Y axis at 0
+            }
+            axisRight.isEnabled = false
+        }
+    }
+
+    private fun loadDataForTimeframe(tabPosition: Int) {
+        if (currentRuns.isEmpty()) {
+            barChart.clear()
+            return
+        }
+
+        // Fetch grouped data and labels from ViewModel
+        val (entries, labels) = viewModel.processChartData(currentRuns, tabPosition)
+
+        // Set the custom X-Axis formatter based on the current labels
+        barChart.xAxis.valueFormatter = object : ValueFormatter() {
+            override fun getFormattedValue(value: Float): String {
+                val index = value.toInt()
+                return if (index >= 0 && index < labels.size) labels[index] else ""
+            }
+        }
+
+        val dataSet = BarDataSet(entries, "Distance").apply {
+            color = Color.parseColor("#C6FF00")
+            valueTextColor = Color.WHITE
+            valueTextSize = 10f
+        }
+
+        barChart.data = BarData(dataSet)
+        // Add animation for smooth transitions between tabs
+        barChart.animateY(500)
+        barChart.invalidate()
     }
 
     private fun setupRecyclerView() {

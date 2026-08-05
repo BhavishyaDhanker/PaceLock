@@ -73,6 +73,14 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
+
+                    <ImageView
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:layout_marginEnd="10dp"
+                        android:src="@drawable/ic_timer"
+                        app:tint="#008C95" />
+
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -84,11 +92,7 @@
                         android:textStyle="bold"
                         android:letterSpacing="0.08" />
 
-                    <ImageView
-                        android:layout_width="22dp"
-                        android:layout_height="22dp"
-                        android:src="@drawable/ic_timer"
-                        app:tint="#008C95" />
+
 
                 </LinearLayout>
 
@@ -158,6 +162,14 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
+
+                    <ImageView
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:src="@drawable/ic_target"
+                        android:layout_marginEnd="10dp"
+                        app:tint="#008C95" />
+
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -168,11 +180,7 @@
                         android:textSize="15sp"
                         android:textStyle="bold" />
 
-                    <ImageView
-                        android:layout_width="22dp"
-                        android:layout_height="22dp"
-                        android:src="@drawable/ic_target"
-                        app:tint="#008C95" />
+
 
                 </LinearLayout>
 
@@ -191,13 +199,13 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="18dp"
+                    android:stepSize="1"
                     android:value="8"
                     android:valueFrom="2"
                     android:valueTo="20"
-                    android:stepSize="1"
                     app:thumbColor="#D4FF00"
                     app:trackColorActive="#505050"
-                    app:trackColorInactive="#3A3A3A"/>
+                    app:trackColorInactive="#3A3A3A" />
 
             </LinearLayout>
 
@@ -223,6 +231,13 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
+                    <ImageView
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:src="@drawable/ic_calender"
+                        android:layout_marginEnd="10dp"
+                        app:tint="#008C95"/>
+
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -234,11 +249,7 @@
                         android:textStyle="bold"
                         android:letterSpacing="0.08"/>
 
-                    <ImageView
-                        android:layout_width="22dp"
-                        android:layout_height="22dp"
-                        android:src="@drawable/ic_calender"
-                        app:tint="#008C95"/>
+
 
                 </LinearLayout>
 
@@ -309,6 +320,14 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
+
+                    <ImageView
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:src="@drawable/ic_cadence"
+                        android:layout_marginEnd="10dp"
+                        app:tint="#008C95" />
+
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -319,11 +338,7 @@
                         android:textSize="15sp"
                         android:textStyle="bold" />
 
-                    <ImageView
-                        android:layout_width="22dp"
-                        android:layout_height="22dp"
-                        android:src="@drawable/ic_cadence"
-                        app:tint="#008C95" />
+
 
                 </LinearLayout>
 
